@@ -1,9 +1,9 @@
 import js from "@eslint/js";
-import ts from "typescript-eslint";
+import tseslint from "typescript-eslint";
 
 export default [
     js.configs.recommended,
-    ...ts.configs.recommended,
+    ...tseslint.configs.recommended,
     {
         files: ["src/**/*.{ts,tsx}"],
         languageOptions: {

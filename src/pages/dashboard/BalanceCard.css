@@ -1,0 +1,49 @@
+.balance-card {
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  border-radius: 16px;
+  padding: 32px;
+  color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.balance-header {
+  font-size: 16px;
+  opacity: 0.9;
+  margin-bottom: 16px;
+}
+
+.balance-amount {
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+.balance-details {
+  display: flex;
+  gap: 32px;
+}
+
+.balance-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.balance-label {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.balance-value {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.balance-item.income .balance-value {
+  color: #10b981;
+}
+
+.balance-item.expense .balance-value {
+  color: #ef4444;
+}
+

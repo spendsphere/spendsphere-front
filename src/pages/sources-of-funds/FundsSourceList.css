@@ -1,0 +1,131 @@
+.funds-source-list {
+  width: 100%;
+}
+
+.sources-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.add-source-card {
+  background-color: #ffffff;
+  border: 2px dashed #d1d5db;
+  border-radius: 12px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 150px;
+}
+
+.add-source-card:hover {
+  border-color: #8b5cf6;
+  background-color: #faf5ff;
+}
+
+.add-icon {
+  font-size: 48px;
+  color: #8b5cf6;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.add-text {
+  font-size: 16px;
+  font-weight: 500;
+  color: #6b7280;
+  text-align: center;
+}
+
+.add-source-card:hover .add-text {
+  color: #8b5cf6;
+}
+
+.source-card {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  transition: box-shadow 0.2s;
+}
+
+.source-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.source-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.source-header {
+  margin-bottom: 4px;
+}
+
+.source-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.source-type {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.source-balance {
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.source-balance.positive {
+  color: #10b981;
+}
+
+.source-balance.negative {
+  color: #ef4444;
+}
+
+.source-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btn-edit,
+.btn-delete {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-edit:hover {
+  background-color: #f3f4f6;
+}
+
+.btn-delete:hover {
+  background-color: #fef2f2;
+}
+

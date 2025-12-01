@@ -1,0 +1,363 @@
+.payments-list-container {
+  width: 100%;
+}
+
+.payments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 24px;
+}
+
+.add-payment-card {
+  background-color: #ffffff;
+  border: 2px dashed #d1d5db;
+  border-radius: 16px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 160px;
+}
+
+.add-payment-card:hover {
+  border-color: #10b981;
+  background-color: #f0fdf4;
+}
+
+.add-icon {
+  font-size: 64px;
+  color: #10b981;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.add-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: #6b7280;
+  text-align: center;
+}
+
+.add-payment-card:hover .add-text {
+  color: #10b981;
+}
+
+/* Заголовки групп платежей */
+.payment-group-header {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 16px;
+  margin-top: 12px;
+  margin-bottom: 0px;
+}
+
+.payment-group-header:first-of-type {
+  margin-top: 0;
+}
+
+.payment-group-overdue {
+  background-color: #fef2f2;
+  color: #dc2626;
+  border-left: 4px solid #ef4444;
+}
+
+.payment-group-upcoming {
+  background-color: #eff6ff;
+  color: #2563eb;
+  border-left: 4px solid #3b82f6;
+}
+
+.payment-group-paid {
+  background-color: #f9fafb;
+  color: #6b7280;
+  border-left: 4px solid #9ca3af;
+}
+
+.group-icon {
+  font-size: 16px;
+}
+
+.group-title {
+  flex: 1;
+}
+
+.group-count {
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+/* Базовые стили карточки */
+.payment-card {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  display: flex;
+  gap: 20px;
+  transition: all 0.2s;
+  position: relative;
+  min-height: 160px;
+}
+
+.payment-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+/* Просроченные платежи - красный акцент */
+.payment-card-overdue {
+  border-left: 4px solid #ef4444;
+  background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);
+  border-color: #fecaca;
+}
+
+.payment-card-overdue:hover {
+  border-color: #ef4444;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
+.payment-icon-wrapper-overdue {
+  background-color: #fee2e2;
+  border-radius: 10px;
+}
+
+.payment-icon-overdue {
+  color: #dc2626;
+}
+
+.payment-amount-overdue {
+  color: #dc2626;
+  font-size: 26px;
+}
+
+.payment-date-badge-overdue {
+  background-color: #fee2e2;
+  border: 1px solid #fecaca;
+}
+
+.payment-date-badge-overdue .payment-date-value {
+  color: #dc2626;
+  font-weight: 700;
+}
+
+/* Предстоящие платежи - синий акцент */
+.payment-card-upcoming {
+  border-left: 4px solid #3b82f6;
+  background-color: #ffffff;
+}
+
+.payment-card-upcoming:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.payment-icon-wrapper-upcoming {
+  background-color: #eff6ff;
+  border-radius: 10px;
+}
+
+.payment-icon-upcoming {
+  color: #2563eb;
+}
+
+.payment-amount-upcoming {
+  color: #1e40af;
+  font-size: 26px;
+}
+
+.payment-date-badge-upcoming {
+  background-color: #eff6ff;
+  border: 1px solid #dbeafe;
+}
+
+.payment-date-badge-upcoming .payment-date-value {
+  color: #2563eb;
+  font-weight: 600;
+}
+
+/* Оплаченные платежи - серый, приглушенный */
+.payment-card-paid {
+  opacity: 0.65;
+  border-left: 4px solid #d1d5db;
+  background-color: #fafafa;
+}
+
+.payment-card-paid:hover {
+  opacity: 0.85;
+  border-color: #9ca3af;
+}
+
+.payment-icon-wrapper-paid {
+  background-color: #f3f4f6;
+  border-radius: 10px;
+}
+
+.payment-icon-paid {
+  filter: grayscale(60%);
+  opacity: 0.7;
+}
+
+.payment-amount-paid {
+  color: #9ca3af;
+  font-size: 22px;
+}
+
+.payment-date-badge-paid {
+  background-color: #f3f4f6;
+  border: 1px solid #e5e7eb;
+}
+
+.payment-date-badge-paid .payment-date-label {
+  color: #9ca3af;
+}
+
+.payment-date-badge-paid .payment-date-value {
+  color: #9ca3af;
+}
+
+/* Иконка */
+.payment-icon-wrapper {
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  border-radius: 12px;
+}
+
+.payment-icon {
+  font-size: 36px;
+  line-height: 1;
+}
+
+/* Контент карточки */
+.payment-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.payment-main-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.payment-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.3;
+  flex: 1;
+}
+
+.payment-amount {
+  font-size: 24px;
+  font-weight: 700;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Бейдж с датой */
+.payment-date-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  width: fit-content;
+}
+
+.payment-date-label {
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.payment-date-value {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+/* Футер карточки */
+.payment-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #6b7280;
+  flex-wrap: wrap;
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.payment-period {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.payment-card-paid .payment-period {
+  color: #9ca3af;
+}
+
+.separator {
+  color: #d1d5db;
+  font-size: 12px;
+}
+
+.payment-category {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.payment-card-paid .payment-category {
+  opacity: 0.7;
+}
+
+.payment-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.btn-action {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 8px;
+  transition: all 0.2s;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-action:hover {
+  background-color: #f3f4f6;
+}
+
+.btn-action.delete:hover {
+  background-color: #fef2f2;
+}
+

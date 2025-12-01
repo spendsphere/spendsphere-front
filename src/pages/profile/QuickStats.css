@@ -1,0 +1,71 @@
+.quick-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transform: translate(30%, -30%);
+}
+
+.stat-content {
+  flex: 1;
+  z-index: 1;
+}
+
+.stat-label {
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.9;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.stat-icon {
+  font-size: 40px;
+  opacity: 0.8;
+  z-index: 1;
+  margin-left: 16px;
+}
+
+.stat-transactions {
+  --gradient-start: #8b5cf6;
+  --gradient-end: #3b82f6;
+}
+
+.stat-regular-payments {
+  --gradient-start: #3b82f6;
+  --gradient-end: #8b5cf6;
+}
+
+.stat-categories {
+  --gradient-start: #3b82f6;
+  --gradient-end: #06b6d4;
+}
+

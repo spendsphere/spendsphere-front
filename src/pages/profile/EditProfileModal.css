@@ -1,0 +1,98 @@
+.avatar-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.avatar-upload-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar-preview {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  border: 4px solid #e5e7eb;
+  transition: all 0.2s;
+}
+
+.avatar-preview:hover {
+  border-color: #8b5cf6;
+}
+
+.avatar-preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  gap: 4px;
+}
+
+.avatar-preview:hover .avatar-overlay {
+  opacity: 1;
+}
+
+.avatar-upload-icon {
+  font-size: 24px;
+}
+
+.avatar-upload-text {
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.avatar-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-confirm-avatar,
+.btn-cancel-avatar {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-confirm-avatar {
+  background-color: #10b981;
+  color: white;
+}
+
+.btn-confirm-avatar:hover {
+  background-color: #059669;
+}
+
+.btn-cancel-avatar {
+  background-color: #ef4444;
+  color: white;
+}
+
+.btn-cancel-avatar:hover {
+  background-color: #dc2626;
+}
+

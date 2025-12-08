@@ -1,0 +1,33 @@
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: #0f172a;
+}
+
+.login-card {
+  background: #111827;
+  color: #e5e7eb;
+  padding: 32px;
+  border-radius: 12px;
+  width: 360px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.google-btn {
+  margin-top: 16px;
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #ef4444;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+.google-btn:hover {
+  background: #dc2626;
+}
+

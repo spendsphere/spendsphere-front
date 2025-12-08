@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCategories } from '../../context/CategoriesContext';
+import { useAuth } from '../../context/AuthContext';
+import { accountsApi, type AccountDTO } from '../../api/accounts';
 import { Transaction } from './TransactionsPage';
 import '../../shared/AddTransactionModal.css';
 import './EditTransactionModal.css';
@@ -33,7 +35,8 @@ const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
   const { getExpenseCategories, getIncomeCategories, getCategoryByName } = useCategories();
-  const accounts = ['Tinkoff', 'Сбербанк', 'Наличные'];
+  const { user } = useAuth();
+  const [accounts, setAccounts] = useState<Pick<AccountDTO, 'id' | 'name'>[]>([]);
 
   const getCategories = () => {
     if (transactionType === 'доход') {
@@ -55,8 +58,14 @@ const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
       setDate(transaction.date);
       setNote(transaction.note || '');
       setCategoryIcon(transaction.categoryIcon);
+      if (user) {
+        accountsApi
+          .list(user.id)
+          .then((list) => setAccounts(list.map((a) => ({ id: a.id, name: a.name }))))
+          .catch(() => setAccounts([]));
+      }
     }
-  }, [isOpen, transaction]);
+  }, [isOpen, transaction, user]);
 
   const handleCategoryChange = (categoryName: string) => {
     setCategory(categoryName);
@@ -132,8 +141,8 @@ const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
             >
               <option value="">Выберите счет</option>
               {accounts.map((account) => (
-                <option key={account} value={account}>
-                  {account}
+                <option key={account.id} value={account.name}>
+                  {account.name}
                 </option>
               ))}
             </select>

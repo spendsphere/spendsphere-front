@@ -25,7 +25,11 @@ const CategoriesList: React.FC<CategoriesListProps> = ({
 
         {categories.map((category) => {
           return (
-            <div key={category.id} className="category-card">
+            <div
+              key={category.id}
+              className={`category-card ${category.isDefault ? 'default' : ''}`}
+              title={category.isDefault ? 'Системная категория' : undefined}
+            >
               <div
                 className="category-icon"
                 style={{ backgroundColor: `${category.color}20` }}
@@ -33,23 +37,34 @@ const CategoriesList: React.FC<CategoriesListProps> = ({
                 <span style={{ fontSize: '24px' }}>{category.icon}</span>
               </div>
               <div className="category-content">
-                <div className="category-name">{category.name}</div>
+                <div className="category-name">
+                  {category.name}
+                  {category.isDefault ? (
+                    <span style={{ marginLeft: 8, fontSize: 12, color: '#6b7280' }}>
+                      (дефолт)
+                    </span>
+                  ) : null}
+                </div>
               </div>
               <div className="category-actions">
-                <button
-                  className="btn-action edit"
-                  onClick={() => onEdit(category)}
-                  title="Редактировать"
-                >
-                  ✏️
-                </button>
-                <button
-                  className="btn-action delete"
-                  onClick={() => onDelete(category)}
-                  title="Удалить"
-                >
-                  🗑️
-                </button>
+                {!category.isDefault && (
+                  <>
+                    <button
+                      className="btn-action edit"
+                      onClick={() => onEdit(category)}
+                      title="Редактировать"
+                    >
+                      ✏️
+                    </button>
+                    <button
+                      className="btn-action delete"
+                      onClick={() => onDelete(category)}
+                      title="Удалить"
+                    >
+                      🗑️
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           );

@@ -11,12 +11,14 @@ interface ProfileInfoProps {
   };
   onEdit: () => void;
   onResetPassword: () => void;
+  onLogout: () => void;
 }
 
 const ProfileInfo: React.FC<ProfileInfoProps> = ({
   profile,
   onEdit,
   onResetPassword,
+  onLogout,
 }) => {
   const formatAmount = (amount: number) => {
     const sign = amount >= 0 ? '+' : '';
@@ -50,6 +52,10 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
         <button className="btn-reset-password" onClick={onResetPassword}>
           <span className="btn-icon">🔒</span>
           Сбросить пароль
+        </button>
+        <button className="btn-reset-password" onClick={onLogout}>
+          <span className="btn-icon">🚪</span>
+          Выйти
         </button>
       </div>
     </div>

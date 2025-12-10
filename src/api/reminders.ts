@@ -1,6 +1,6 @@
 import { apiClient } from './client';
 
-export type RecurrenceType = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY';
+export type RecurrenceType = 'DAILY' | 'WEEKLY' | 'MONTHLY';
 
 export interface ReminderDTO {
   id: number;
@@ -46,5 +46,6 @@ export const remindersApi = {
   upcoming: (userId: number, days = 5) =>
     apiClient.get<ReminderDTO[]>(`/v1/users/${userId}/reminders/upcoming?days=${days}`),
 };
+
 
 

@@ -4,6 +4,7 @@ import Header from '../../shared/Header';
 import SummaryCards from './SummaryCards';
 import PaymentsList from './PaymentsList';
 import AddRegularPaymentModal from './AddRegularPaymentModal';
+import EditRegularPaymentModal from './EditRegularPaymentModal';
 import './RegularPaymentsPage.css';
 import { useAuth } from '../../context/AuthContext';
 import { remindersApi, type ReminderDTO, type ReminderCreateDTO, type ReminderUpdateDTO } from '../../api/reminders';
@@ -13,12 +14,9 @@ export interface RegularPayment {
   name: string;
   icon: string;
   amount: number;
-  period: 'weekly' | 'monthly' | 'quarterly' | 'yearly' | 'custom';
+  period: 'daily' | 'weekly' | 'monthly';
   dayOfMonth?: number; // Для monthly - день месяца (1-31)
   dayOfWeek?: number; // Для weekly (0-6, где 0 = воскресенье)
-  monthInQuarter?: number; // Для quarterly - номер месяца в квартале (1-3)
-  monthOfYear?: number; // Для yearly - номер месяца в году (1-12)
-  customDays?: number; // Для custom периода (количество дней)
   category: string;
   categoryColor: string;
   isActive: boolean;
@@ -29,6 +27,7 @@ export interface RegularPayment {
 const RegularPaymentsPage: React.FC = () => {
   const { user } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingPayment, setEditingPayment] = useState<RegularPayment | null>(null);
   const [payments, setPayments] = useState<RegularPayment[]>([]);
 
   const mapDto = (r: ReminderDTO): RegularPayment => ({
@@ -37,13 +36,11 @@ const RegularPaymentsPage: React.FC = () => {
     icon: '🔔',
     amount: Number(r.amount),
     period:
-      r.recurrenceType === 'WEEKLY'
+      r.recurrenceType === 'DAILY'
+        ? 'daily'
+        : r.recurrenceType === 'WEEKLY'
         ? 'weekly'
-        : r.recurrenceType === 'MONTHLY'
-        ? 'monthly'
-        : r.recurrenceType === 'YEARLY'
-        ? 'yearly'
-        : 'custom',
+        : 'monthly',
     dayOfMonth: r.monthlyDayOfMonth ?? undefined,
     dayOfWeek:
       r.weeklyDayOfWeek != null
@@ -81,7 +78,7 @@ const RegularPaymentsPage: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const handleAddPayment = async (newPayment: Omit<RegularPayment, 'id'>) => {
+  const handleAddPayment = async (newPayment: Omit<RegularPayment, 'id'> & { accountId: number }) => {
     if (!user) return;
     try {
       const dowMap = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'] as const;
@@ -90,24 +87,22 @@ const RegularPaymentsPage: React.FC = () => {
         description: null,
         amount: newPayment.amount,
         recurrenceType:
-          newPayment.period === 'weekly'
+          newPayment.period === 'daily'
+            ? 'DAILY'
+            : newPayment.period === 'weekly'
             ? 'WEEKLY'
-            : newPayment.period === 'monthly'
-            ? 'MONTHLY'
-            : newPayment.period === 'yearly'
-            ? 'YEARLY'
             : 'MONTHLY',
         weeklyDayOfWeek:
           newPayment.period === 'weekly' && typeof newPayment.dayOfWeek === 'number'
             ? dowMap[newPayment.dayOfWeek] || null
             : null,
         monthlyDayOfMonth:
-          newPayment.period === 'monthly' || newPayment.period === 'quarterly' || newPayment.period === 'yearly'
+          newPayment.period === 'monthly'
             ? newPayment.dayOfMonth ?? null
             : null,
         monthlyUseLastDay: null,
         isActive: newPayment.isActive,
-        accountId: 1, // TODO: выбрать счет из UI
+        accountId: newPayment.accountId,
       };
       const created = await remindersApi.create(user.id, body);
       setPayments((prev) => [mapDto(created), ...prev]);
@@ -169,6 +164,10 @@ const RegularPaymentsPage: React.FC = () => {
   const monthlyExpenses = Math.round(
     payments.reduce((sum, p) => {
       if (!p.isActive) return sum;
+      if (p.period === 'daily') {
+        const daysInMonth = lastDay.getDate();
+        return sum + daysInMonth * p.amount;
+      }
       if (p.period === 'weekly' && typeof p.dayOfWeek === 'number') {
         const dates = listWeeklyDatesInMonth(p.dayOfWeek);
         return sum + dates.length * p.amount;
@@ -177,15 +176,19 @@ const RegularPaymentsPage: React.FC = () => {
         const d = getMonthlyDateInMonth(p.dayOfMonth);
         return sum + (d ? p.amount : 0);
       }
-      // Для yearly/custom без точной даты в месяце не учитываем в ежемесячных расходах
       return sum;
     }, 0)
   );
 
-  const totalPayments = payments.length;
+  const totalPayments = payments.filter((p) => p.isActive).length;
 
   const remainingThisMonth = payments.reduce((cnt, p) => {
     if (!p.isActive) return cnt;
+    if (p.period === 'daily') {
+      // количество дней включительно до конца месяца
+      const todayDay = today.getDate();
+      return cnt + (lastDay.getDate() - todayDay + 1);
+    }
     if (p.period === 'weekly' && typeof p.dayOfWeek === 'number') {
       const dates = listWeeklyDatesInMonth(p.dayOfWeek);
       return cnt + dates.filter((d) => d >= today || sameDay(d, today)).length;
@@ -216,6 +219,7 @@ const RegularPaymentsPage: React.FC = () => {
             onAdd={handleOpenModal}
             onToggle={handleTogglePayment}
             onDelete={handleDeletePayment}
+            onEdit={(p) => setEditingPayment(p)}
           />
         </div>
       </div>
@@ -224,6 +228,40 @@ const RegularPaymentsPage: React.FC = () => {
         onClose={handleCloseModal}
         onSave={handleAddPayment}
       />
+      {editingPayment && (
+        <EditRegularPaymentModal
+          isOpen={!!editingPayment}
+          payment={editingPayment}
+          onClose={() => setEditingPayment(null)}
+          onSave={async (updated) => {
+            if (!user) return;
+            try {
+              const dowMap = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'] as const;
+              const body: ReminderUpdateDTO = {
+                title: updated.name,
+                amount: updated.amount,
+                recurrenceType:
+                  updated.period === 'daily'
+                    ? 'DAILY'
+                    : updated.period === 'weekly'
+                    ? 'WEEKLY'
+                    : 'MONTHLY',
+                weeklyDayOfWeek:
+                  updated.period === 'weekly' && typeof updated.dayOfWeek === 'number'
+                    ? dowMap[updated.dayOfWeek] || null
+                    : null,
+                monthlyDayOfMonth:
+                  updated.period === 'monthly' ? updated.dayOfMonth ?? null : null,
+              };
+              const saved = await remindersApi.update(user.id, Number(updated.id), body);
+              setPayments((prev) => prev.map((p) => (p.id === updated.id ? mapDto(saved) : p)));
+              setEditingPayment(null);
+            } catch {
+              // noop
+            }
+          }}
+        />
+      )}
     </div>
   );
 };

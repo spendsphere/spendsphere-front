@@ -91,7 +91,7 @@ const CategoriesPage: React.FC = () => {
         <Header title="Категории" />
         <div className="categories-page-content">
           <SummaryCards
-            totalCategories={totalExpenseCategories}
+            totalCategories={categories.length}
             totalSpent={totalSpent}
             largestCategory={largestCategory}
             largestCategoryAmount={largestCategoryAmount}

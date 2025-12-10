@@ -11,10 +11,12 @@ import { userApi } from '../../api/user';
 import { fetchTransactions } from '../../api/transactions';
 import { remindersApi } from '../../api/reminders';
 import { categoriesApi } from '../../api/categories';
+import { useAuth as useAuthContext } from '../../context/AuthContext';
 
 const ProfilePage: React.FC = () => {
   const { user } = useAuth();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const { logout } = useAuthContext();
   
   // Данные профиля
   const [profile, setProfile] = useState({
@@ -56,7 +58,9 @@ const ProfilePage: React.FC = () => {
       const transactions =
         tx.status === 'fulfilled' ? (Array.isArray(tx.value) ? tx.value.length : 0) : 0;
       const regularPayments =
-        rem.status === 'fulfilled' ? (Array.isArray(rem.value) ? rem.value.length : 0) : 0;
+        rem.status === 'fulfilled'
+          ? (Array.isArray(rem.value) ? rem.value.filter((r) => r.isActive).length : 0)
+          : 0;
       const categories =
         cat.status === 'fulfilled' ? (Array.isArray(cat.value) ? cat.value.length : 0) : 0;
       setStats({ transactions, regularPayments, categories });
@@ -116,6 +120,7 @@ const ProfilePage: React.FC = () => {
               // TODO: Реализовать сброс пароля
               alert('Функция сброса пароля будет реализована');
             }}
+            onLogout={logout}
           />
           <QuickStats stats={stats} />
           <PaymentHistory payments={paymentHistory} />

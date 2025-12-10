@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { accountsApi } from '../../api/accounts';
 import './BalanceCard.css';
@@ -6,6 +6,15 @@ import './BalanceCard.css';
 const BalanceCard: React.FC = () => {
   const { user } = useAuth();
   const [total, setTotal] = useState<number>(0);
+  const formatter = useMemo(
+    () =>
+      new Intl.NumberFormat('ru-RU', {
+        style: 'currency',
+        currency: 'RUB',
+        maximumFractionDigits: 0,
+      }),
+    []
+  );
 
   useEffect(() => {
     if (!user) return;
@@ -19,8 +28,7 @@ const BalanceCard: React.FC = () => {
       .catch(() => setTotal(0));
   }, [user?.id]);
 
-  const formatAmount = (n: number) =>
-    n.toLocaleString('ru-RU', { maximumFractionDigits: 2 }) + ' Р';
+  const formatAmount = (n: number) => formatter.format(n);
 
   return (
     <div className="balance-card">

@@ -166,8 +166,6 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
             note: created.description || '',
             status: 'added',
           });
-        } else {
-          alert('Транзакция добавлена');
         }
       }
 

@@ -28,7 +28,7 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({
 
       <div className="summary-card total-payments">
         <div className="summary-card-content">
-          <div className="summary-card-label">Всего платежей</div>
+          <div className="summary-card-label">Всего активных платежей</div>
           <div className="summary-card-value">{totalPayments}</div>
         </div>
         <div className="summary-card-icon">📋</div>

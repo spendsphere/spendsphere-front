@@ -23,7 +23,7 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({
     <div className="summary-cards">
       <div className="summary-card categories-count">
         <div className="summary-card-content">
-          <div className="summary-card-label">Категории расходов</div>
+          <div className="summary-card-label">Всего категорий</div>
           <div className="summary-card-value">{totalCategories}</div>
         </div>
         <div className="summary-card-icon">🍴</div>

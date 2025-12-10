@@ -56,14 +56,14 @@ const SourcesOfFundsPage: React.FC = () => {
     if (!user) return;
     try {
       const list = await accountsApi.list(user.id);
-      setSources(
-        list.map((a) => ({
-          id: String(a.id),
-          name: a.name,
-          type: toUiType(a.accountType),
-          balance: Number(a.balance),
-        })),
-      );
+      const mapped = list.map((a) => ({
+        id: String(a.id),
+        name: a.name,
+        type: toUiType(a.accountType),
+        balance: Number(a.balance),
+      }));
+      mapped.sort((a, b) => a.name.localeCompare(b.name));
+      setSources(mapped);
     } catch {
       setSources([]);
     }
@@ -104,15 +104,19 @@ const SourcesOfFundsPage: React.FC = () => {
         includeInTotal: true,
       };
       const created = await accountsApi.create(user.id, body);
-      setSources((prev) => [
-        {
-          id: String(created.id),
-          name: created.name,
-          type: toUiType(created.accountType),
-          balance: Number(created.balance),
-        },
-        ...prev,
-      ]);
+      setSources((prev) => {
+        const next = [
+          ...prev,
+          {
+            id: String(created.id),
+            name: created.name,
+            type: toUiType(created.accountType),
+            balance: Number(created.balance),
+          },
+        ];
+        next.sort((a, b) => a.name.localeCompare(b.name));
+        return next;
+      });
       setIsAddModalOpen(false);
     } catch {
       // noop
@@ -133,8 +137,8 @@ const SourcesOfFundsPage: React.FC = () => {
         includeInTotal: true,
       };
       const updated = await accountsApi.update(user.id, Number(updatedSource.id), body);
-      setSources((prev) =>
-        prev.map((s) =>
+      setSources((prev) => {
+        const next = prev.map((s) =>
           s.id === updatedSource.id
             ? {
                 id: String(updated.id),
@@ -143,8 +147,10 @@ const SourcesOfFundsPage: React.FC = () => {
                 balance: Number(updated.balance),
               }
             : s,
-        ),
-      );
+        );
+        next.sort((a, b) => a.name.localeCompare(b.name));
+        return next;
+      });
       setEditingSource(null);
     } catch {
       // noop

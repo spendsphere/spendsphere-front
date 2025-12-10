@@ -7,13 +7,14 @@
 }
 
 .balance-header {
-  font-size: 16px;
+  font-size: 20px;
   opacity: 0.9;
   margin-bottom: 16px;
 }
 
-.balance-amount {
-  font-size: 48px;
+.balance-card .balance-amount {
+  font-size: clamp(28px, 3vw, 48px) !important;
+  line-height: 1;
   font-weight: 700;
   margin-bottom: 24px;
 }
@@ -34,8 +35,8 @@
   opacity: 0.8;
 }
 
-.balance-value {
-  font-size: 20px;
+.balance-card .balance-value {
+  font-size: clamp(12px, 1.2vw, 18px) !important;
   font-weight: 600;
 }
 

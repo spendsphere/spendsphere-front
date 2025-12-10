@@ -7,6 +7,7 @@ interface PaymentsListProps {
   onAdd: () => void;
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
+  onEdit?: (payment: RegularPayment) => void;
 }
 
 const PaymentsList: React.FC<PaymentsListProps> = ({
@@ -14,6 +15,7 @@ const PaymentsList: React.FC<PaymentsListProps> = ({
   onAdd,
   onToggle,
   onDelete,
+  onEdit,
 }) => {
   const formatAmount = (amount: number) => {
     return `${amount.toLocaleString('ru-RU')} Р`;
@@ -26,6 +28,8 @@ const PaymentsList: React.FC<PaymentsListProps> = ({
 
   const getPeriodLabel = (payment: RegularPayment): string => {
     switch (payment.period) {
+      case 'daily':
+        return 'Ежедневно';
       case 'weekly': {
         const dayNames = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
         const dayName = dayNames[payment.dayOfWeek || 1];
@@ -33,31 +37,6 @@ const PaymentsList: React.FC<PaymentsListProps> = ({
       }
       case 'monthly':
         return `Ежемесячно (${payment.dayOfMonth} число)`;
-      case 'quarterly': {
-        const monthLabels = ['1-й месяц', '2-й месяц', '3-й месяц'];
-        const monthLabel = monthLabels[(payment.monthInQuarter || 1) - 1];
-        return `Ежеквартально (${monthLabel}, ${payment.dayOfMonth} число)`;
-      }
-      case 'yearly': {
-        const monthNames = [
-          'Январь',
-          'Февраль',
-          'Март',
-          'Апрель',
-          'Май',
-          'Июнь',
-          'Июль',
-          'Август',
-          'Сентябрь',
-          'Октябрь',
-          'Ноябрь',
-          'Декабрь',
-        ];
-        const monthName = monthNames[(payment.monthOfYear || 1) - 1];
-        return `Ежегодно (${monthName}, ${payment.dayOfMonth} число)`;
-      }
-      case 'custom':
-        return `Каждые ${payment.customDays} дней`;
       default:
         return 'Регулярно';
     }
@@ -66,6 +45,11 @@ const PaymentsList: React.FC<PaymentsListProps> = ({
   const getPaymentStatus = (payment: RegularPayment): 'paid' | 'overdue' | 'upcoming' => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+
+    // Для неактивных считаем отдельной группой "Архив", статус не важен
+    if (!payment.isActive) {
+      return 'upcoming';
+    }
 
     if (payment.lastPaid) {
       const lastPaidDate = new Date(payment.lastPaid);
@@ -118,6 +102,31 @@ const PaymentsList: React.FC<PaymentsListProps> = ({
     return `${day} ${monthNames[date.getMonth()]}`;
   };
 
+  const computeNextDate = (payment: RegularPayment): Date | null => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (!payment.isActive) return null;
+    if (payment.period === 'daily') {
+      return today;
+    }
+    if (payment.period === 'weekly' && typeof payment.dayOfWeek === 'number') {
+      const d = new Date(today);
+      const delta = (payment.dayOfWeek - d.getDay() + 7) % 7;
+      if (delta === 0) {
+        return d;
+      }
+      d.setDate(d.getDate() + delta);
+      return d;
+    }
+    if (payment.period === 'monthly' && typeof payment.dayOfMonth === 'number') {
+      const current = new Date(today.getFullYear(), today.getMonth(), payment.dayOfMonth);
+      if (current >= today) return current;
+      // следующий месяц
+      return new Date(today.getFullYear(), today.getMonth() + 1, payment.dayOfMonth);
+    }
+    return null;
+  };
+
   // Группируем платежи по статусам
   const paymentsByStatus = {
     overdue: [] as RegularPayment[],
@@ -125,28 +134,41 @@ const PaymentsList: React.FC<PaymentsListProps> = ({
     paid: [] as RegularPayment[],
   };
 
-  payments
-    .filter((p) => p.isActive)
-    .forEach((payment) => {
-      const status = getPaymentStatus(payment);
-      paymentsByStatus[status].push(payment);
-    });
+  payments.forEach((payment) => {
+    if (!payment.isActive) return;
+    const status = getPaymentStatus(payment);
+    paymentsByStatus[status].push(payment);
+  });
+
+  const archived = payments.filter((p) => !p.isActive);
 
   // Сортируем внутри каждой группы по дате
-  Object.keys(paymentsByStatus).forEach((status) => {
-    paymentsByStatus[status as keyof typeof paymentsByStatus].sort((a, b) => {
-      const aDate = a.nextPayment || a.lastPaid || '';
-      const bDate = b.nextPayment || b.lastPaid || '';
-      if (!aDate || !bDate) return 0;
-      return new Date(aDate).getTime() - new Date(bDate).getTime();
-    });
+  // Для upcoming сортируем по ближайшей дате выплат (чем ближе, тем раньше)
+  paymentsByStatus.upcoming.sort((a, b) => {
+    const ad = computeNextDate(a)?.getTime() ?? Infinity;
+    const bd = computeNextDate(b)?.getTime() ?? Infinity;
+    return ad - bd;
+  });
+  // Остальные группы оставляем как есть или сортируем по lastPaid/nextPayment если есть
+  paymentsByStatus.overdue.sort((a, b) => {
+    const aDate = a.nextPayment || a.lastPaid || '';
+    const bDate = b.nextPayment || b.lastPaid || '';
+    if (!aDate || !bDate) return 0;
+    return new Date(aDate).getTime() - new Date(bDate).getTime();
+  });
+  paymentsByStatus.paid.sort((a, b) => {
+    const aDate = a.lastPaid || a.nextPayment || '';
+    const bDate = b.lastPaid || b.nextPayment || '';
+    if (!aDate || !bDate) return 0;
+    return new Date(aDate).getTime() - new Date(bDate).getTime();
   });
 
   const renderPaymentCard = (payment: RegularPayment) => {
     const status = getPaymentStatus(payment);
-    const hasNextPayment = !!payment.nextPayment;
-    const displayDate = payment.nextPayment
-      ? formatFullDate(payment.nextPayment)
+    const nextDate = computeNextDate(payment);
+    const hasNextPayment = !!nextDate;
+    const displayDate = nextDate
+      ? formatFullDate(nextDate.toISOString())
       : payment.lastPaid
         ? formatFullDate(payment.lastPaid)
         : '';
@@ -189,10 +211,19 @@ const PaymentsList: React.FC<PaymentsListProps> = ({
           <button
             className="btn-action"
             onClick={() => onToggle(payment.id)}
-            title={payment.isActive ? 'Отключить' : 'Включить'}
+            title={payment.isActive ? 'В архив' : 'Вернуть из архива'}
           >
-            {payment.isActive ? '✓' : '○'}
+            {payment.isActive ? '📦' : '📤'}
           </button>
+          {onEdit && (
+            <button
+              className="btn-action"
+              onClick={() => onEdit(payment)}
+              title="Редактировать"
+            >
+              ✏️
+            </button>
+          )}
           <button
             className="btn-action delete"
             onClick={() => onDelete(payment.id)}
@@ -246,6 +277,18 @@ const PaymentsList: React.FC<PaymentsListProps> = ({
               <span className="group-count">({paymentsByStatus.paid.length})</span>
             </div>
             {paymentsByStatus.paid.map(renderPaymentCard)}
+          </>
+        )}
+
+        {/* Архив (неактивные) */}
+        {archived.length > 0 && (
+          <>
+            <div className="payment-group-header payment-group-archived">
+              <span className="group-icon">📦</span>
+              <span className="group-title">Архив</span>
+              <span className="group-count">({archived.length})</span>
+            </div>
+            {archived.map(renderPaymentCard)}
           </>
         )}
       </div>

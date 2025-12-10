@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useCategories } from '../context/CategoriesContext';
+import { useAuth } from '../context/AuthContext';
 import { Transaction } from '../../pages/transactions/TransactionsPage';
+import { accountsApi, type AccountDTO } from '../api/accounts';
+import {
+  createTransaction,
+  uploadTransactionPhoto,
+  type TransactionCreateDTO,
+} from '../api/transactions';
 import './AddTransactionModal.css';
 
 interface AddTransactionModalProps {
@@ -24,8 +31,9 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
   onClose,
   onSave,
 }) => {
+  const { user } = useAuth();
   const { getExpenseCategories, getIncomeCategories, getCategoryByName } = useCategories();
-  const [selectedAccount, setSelectedAccount] = useState<string>('');
+  const [selectedAccountId, setSelectedAccountId] = useState<string>('');
   const [entryType, setEntryType] = useState<'автоматически' | 'вручную' | ''>(
     ''
   );
@@ -39,12 +47,10 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string>('');
   const [isRecognizing, setIsRecognizing] = useState<boolean>(false);
-  const [recognizedTransactions, setRecognizedTransactions] = useState<
-    RecognizedTransaction[]
-  >([]);
+  const [recognizedTransactions, setRecognizedTransactions] = useState<RecognizedTransaction[]>([]);
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
-  const accounts = ['Tinkoff', 'Сбербанк', 'Наличные'];
+  const [accounts, setAccounts] = useState<Pick<AccountDTO, 'id' | 'name'>[]>([]);
 
   const getCategories = () => {
     if (transactionType === 'доход') {
@@ -69,7 +75,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
       const today = new Date().toISOString().split('T')[0];
       setDate(today);
       // Reset other fields
-      setSelectedAccount('');
+      setSelectedAccountId('');
       setEntryType('');
       setTransactionType('');
       setCategory('');
@@ -80,8 +86,15 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
       setIsRecognizing(false);
       setRecognizedTransactions([]);
       setIsSaving(false);
+      // Load accounts
+      if (user) {
+        accountsApi
+          .list(user.id)
+          .then((list) => setAccounts(list.map((a) => ({ id: a.id, name: a.name }))))
+          .catch(() => setAccounts([]));
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, user]);
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -95,36 +108,17 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
     }
   };
 
-  // Mock API: Recognize photo
   const handleRecognize = async () => {
-    if (!photo) return;
+    if (!photo || !user || !selectedAccountId) {
+      alert('Выберите счет и загрузите фото');
+      return;
+    }
 
     setIsRecognizing(true);
     try {
-      // Mock API call - simulate delay
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Mock recognized transactions (can be 1 or more)
-      const mockTransactions: RecognizedTransaction[] = [
-        {
-          id: '1',
-          type: 'расход',
-          category: categories[0].name,
-          amount: 1250,
-          date: date || new Date().toISOString().split('T')[0],
-          note: 'Магазин "Пятёрочка"',
-        },
-        {
-          id: '2',
-          type: 'расход',
-          category: categories[1].name,
-          amount: 500,
-          date: date || new Date().toISOString().split('T')[0],
-          note: 'Метро',
-        },
-      ];
-
-      setRecognizedTransactions(mockTransactions);
+      await uploadTransactionPhoto(user.id, Number(selectedAccountId), photo);
+      alert('Фото отправлено на распознавание. Результаты появятся позже.');
+      setRecognizedTransactions([]);
     } catch (error) {
       console.error('Error recognizing photo:', error);
       alert('Ошибка при распознавании фото. Попробуйте еще раз.');
@@ -133,66 +127,48 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
     }
   };
 
-  // Mock API: Save transactions
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
 
     try {
-      let transactionsToSave: RecognizedTransaction[];
-
       if (entryType === 'автоматически') {
-        // Save recognized transactions
-        if (recognizedTransactions.length === 0) {
-          alert('Сначала распознайте фото');
-          setIsSaving(false);
-          return;
-        }
-        transactionsToSave = recognizedTransactions;
+        alert('Фото уже отправлено. Дождитесь распознавания и сохраните транзакции позже.');
+        setIsSaving(false);
+        return;
       } else {
         // Save manual transaction
-        if (!transactionType || !category || !amount || !date) {
+        if (!transactionType || !category || !amount || !date || !selectedAccountId || !user) {
           alert('Заполните все обязательные поля');
           setIsSaving(false);
           return;
         }
-        transactionsToSave = [
-          {
-            id: Date.now().toString(),
-            type: transactionType as 'доход' | 'расход',
-            category,
-            amount: parseFloat(amount),
-            date,
-            note: note || undefined,
-          },
-        ];
-      }
-
-      // Mock API call - simulate delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Mock successful save
-      console.log('Saving transactions:', {
-        account: selectedAccount,
-        transactions: transactionsToSave,
-      });
-
-      // Call onSave callback if provided (for TransactionsPage)
-      if (onSave) {
-        transactionsToSave.forEach((trans) => {
+        const typeBackend: TransactionCreateDTO['type'] =
+          transactionType === 'доход' ? 'INCOME' : 'EXPENSE';
+        const cat = getCategoryByName(category);
+        const body: TransactionCreateDTO = {
+          type: typeBackend,
+          categoryId: cat ? Number(cat.id) : null,
+          accountId: Number(selectedAccountId),
+          amount: parseFloat(amount),
+          description: note || null,
+          date,
+        };
+        const created = await createTransaction(user.id, body);
+        if (onSave) {
           onSave({
-            source: selectedAccount,
-            type: trans.type,
-            category: trans.category,
-            categoryIcon: getCategoryIcon(trans.category),
-            amount: trans.amount,
-            date: trans.date,
-            note: trans.note,
-            status: 'added' as const,
+            source: created.accountName || accounts.find((a) => String(a.id) === selectedAccountId)?.name || '—',
+            type: transactionType as 'доход' | 'расход',
+            category: created.categoryName || category,
+            categoryIcon: '📁',
+            amount: created.amount,
+            date: created.date,
+            note: created.description || '',
+            status: 'added',
           });
-        });
-      } else {
-        alert(`Успешно сохранено ${transactionsToSave.length} транзакция(ий)`);
+        } else {
+          alert('Транзакция добавлена');
+        }
       }
 
       handleClose();
@@ -226,7 +202,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
 
   const handleClose = () => {
     // Reset form
-    setSelectedAccount('');
+    setSelectedAccountId('');
     setEntryType('');
     setTransactionType('');
     setCategory('');
@@ -261,14 +237,14 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
             <select
               id="account"
               className="form-select"
-              value={selectedAccount}
-              onChange={(e) => setSelectedAccount(e.target.value)}
+              value={selectedAccountId}
+              onChange={(e) => setSelectedAccountId(e.target.value)}
               required
             >
               <option value="">Выберите счет</option>
               {accounts.map((account) => (
-                <option key={account} value={account}>
-                  {account}
+                <option key={account.id} value={String(account.id)}>
+                  {account.name}
                 </option>
               ))}
             </select>

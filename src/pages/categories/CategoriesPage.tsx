@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useCategories, Category } from '../../context/CategoriesContext';
 import Header from '../../shared/Header';
 import Sidebar from '../../shared/Sidebar';
@@ -8,9 +8,12 @@ import AddCategoryModal from './AddCategoryModal';
 import EditCategoryModal from './EditCategoryModal';
 import DeleteCategoryModal from './DeleteCategoryModal';
 import './CategoriesPage.css';
+import { useAuth } from '../../context/AuthContext';
+import { fetchTransactions } from '../../api/transactions';
 
 const CategoriesPage: React.FC = () => {
   const { categories, getExpenseCategories } = useCategories();
+  const { user } = useAuth();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [deletingCategory, setDeletingCategory] = useState<Category | null>(
@@ -18,13 +21,68 @@ const CategoriesPage: React.FC = () => {
   );
 
   // Подсчет статистики
-  const expenseCategories = getExpenseCategories();
-  const totalExpenseCategories = expenseCategories.length;
+  const [totalExpenseCategories, setTotalExpenseCategories] = useState<number>(0);
 
-  // TODO: Подсчет потраченного и самой крупной категории нужно будет брать из транзакций
-  const totalSpent = 75430; // Мок данные
-  const largestCategory = categories.find((cat) => cat.name === 'Продукты');
-  const largestCategoryAmount = largestCategory ? 32000 : 0;
+  const [totalSpent, setTotalSpent] = useState<number>(0);
+  const [largestCategoryId, setLargestCategoryId] = useState<string | null>(null);
+  const [largestCategoryAmount, setLargestCategoryAmount] = useState<number>(0);
+
+  const largestCategory = useMemo(
+    () => categories.find((c) => c.id === largestCategoryId),
+    [categories, largestCategoryId]
+  );
+
+  useEffect(() => {
+    if (!user) return;
+    const now = new Date();
+    const first = new Date(now.getFullYear(), now.getMonth(), 1);
+    const last = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+    fetchTransactions(user.id)
+      .then((all) => {
+        // фильтруем по месяцу и типу EXPENSE на клиенте, чтобы не падать на /filter
+        const inMonth = all.filter((t) => {
+          const d = new Date(t.date);
+          return d >= first && d <= last && t.type === 'EXPENSE';
+        });
+
+        const byCategory = new Map<number | null, number>();
+        let sum = 0;
+        for (const t of inMonth) {
+          const amt = Number(t.amount || 0);
+          sum += amt;
+          const key = t.categoryId ?? -1;
+          byCategory.set(key, (byCategory.get(key) || 0) + amt);
+        }
+        setTotalSpent(sum);
+        // count of expense categories used this month (excluding null category)
+        const usedCount = Array.from(byCategory.keys()).filter((k) => k != null && k !== -1).length;
+        setTotalExpenseCategories(usedCount);
+        // find max
+        let maxKey: number | null = null;
+        let maxVal = 0;
+        for (const [k, v] of byCategory.entries()) {
+          if (v > maxVal) {
+            maxVal = v;
+            maxKey = k === -1 ? null : k;
+          }
+        }
+        setLargestCategoryAmount(maxVal);
+        if (maxKey != null) {
+          const found = categories.find((c) => Number(c.id) === maxKey);
+          setLargestCategoryId(found ? found.id : null);
+        } else {
+          setLargestCategoryId(null);
+        }
+      })
+      .catch(() => {
+        setTotalSpent(0);
+        setLargestCategoryId(null);
+        setLargestCategoryAmount(0);
+        setTotalExpenseCategories(0);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id, categories.length]);
 
   return (
     <div className="categories-page">

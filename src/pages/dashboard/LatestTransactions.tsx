@@ -1,34 +1,36 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import { fetchTransactions, type BackendTransactionDTO } from '../../api/transactions';
 import './LatestTransactions.css';
 
 const LatestTransactions: React.FC = () => {
-  const transactions = [
-    {
-      icon: '🛒',
-      category: 'Продукты',
-      date: '10 ноября, 14:30',
-      amount: '-1 250 Р',
-      source: 'Карта Tinkoff',
-      type: 'expense',
-    },
-    {
-      icon: '💼',
-      category: 'Зарплата',
-      date: '9 ноября, 10:00',
-      amount: '+60 000 Р',
-      source: 'Карта Tinkoff',
-      type: 'income',
-    },
-    {
-      icon: '🚗',
-      category: 'Заправка',
-      date: '8 ноября, 18:45',
-      amount: '-2 500 Р',
-      source: 'Карта Tinkoff',
-      type: 'expense',
-    },
-  ];
+  const { user } = useAuth();
+  const [items, setItems] = useState<BackendTransactionDTO[]>([]);
+
+  useEffect(() => {
+    if (!user) return;
+    fetchTransactions(user.id)
+      .then((list) => setItems(list.slice(0, 3)))
+      .catch(() => setItems([]));
+  }, [user?.id]);
+
+  const formatDate = (isoDate: string) => {
+    try {
+      const d = new Date(isoDate);
+      return d.toLocaleDateString('ru-RU', {
+        day: '2-digit',
+        month: 'long',
+      });
+    } catch {
+      return isoDate;
+    }
+  };
+
+  const formatAmount = (amount: number, type: BackendTransactionDTO['type']) => {
+    const sign = type === 'INCOME' ? '+' : '-';
+    return `${sign}${amount.toLocaleString('ru-RU')} Р`;
+  };
 
   return (
     <section className="latest-transactions">
@@ -39,20 +41,20 @@ const LatestTransactions: React.FC = () => {
         </Link>
       </div>
       <div className="transactions-list">
-        {transactions.map((transaction, index) => (
-          <div key={index} className="transaction-item">
-            <div className="transaction-icon">{transaction.icon}</div>
+        {items.map((t) => (
+          <div key={t.id} className="transaction-item">
+            <div className="transaction-icon">{'📁'}</div>
             <div className="transaction-info">
-              <div className="transaction-category">{transaction.category}</div>
+              <div className="transaction-category">{t.categoryName || 'Без категории'}</div>
               <div className="transaction-meta">
-                <span className="transaction-date">{transaction.date}</span>
-                <span className="transaction-source">{transaction.source}</span>
+                <span className="transaction-date">{formatDate(t.date)}</span>
+                <span className="transaction-source">{t.accountName || '—'}</span>
               </div>
             </div>
             <div
-              className={`transaction-amount ${transaction.type}`}
+              className={`transaction-amount ${t.type === 'INCOME' ? 'income' : 'expense'}`}
             >
-              {transaction.amount}
+              {formatAmount(t.amount, t.type)}
             </div>
           </div>
         ))}

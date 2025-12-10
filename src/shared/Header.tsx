@@ -1,4 +1,6 @@
 import React from 'react';
+import { useAuth } from '../context/AuthContext';
+import { Link } from 'react-router-dom';
 import './Header.css';
 
 interface HeaderProps {
@@ -7,6 +9,10 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ onOpenModal, title = 'Главная' }) => {
+  const { user } = useAuth();
+  const displayName = user ? [user.name, user.surname].filter(Boolean).join(' ') : '';
+  const avatarUrl =
+    (user && user.photoUrl) || 'https://via.placeholder.com/40?text=U';
   return (
     <header className="header">
       <h1 className="header-title">{title}</h1>
@@ -17,13 +23,16 @@ const Header: React.FC<HeaderProps> = ({ onOpenModal, title = 'Главная' }
             Добавить запись
           </button>
         )}
-        <div className="user-avatar">
+        <Link to="/profile" className="user-avatar" title={displayName}>
           <img
-            src="https://via.placeholder.com/40?text=U"
-            alt="User"
+            src={avatarUrl}
+            alt={displayName || 'User'}
             className="avatar-img"
           />
-        </div>
+          {displayName && (
+            <span style={{ marginLeft: 8, fontSize: 14 }}>{displayName}</span>
+          )}
+        </Link>
       </div>
     </header>
   );

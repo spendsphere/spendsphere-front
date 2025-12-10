@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { useAuth } from './AuthContext';
+import { categoriesApi, type CategoryDTO, type CategoryInputDTO, type BackendCategoryType } from '../api/categories';
 
 export interface Category {
   id: string;
@@ -6,6 +8,7 @@ export interface Category {
   icon: string;
   color: string;
   type: 'expense' | 'income' | 'both'; // Тип: расходы, доходы, или оба
+  isDefault?: boolean;
 }
 
 interface CategoriesContextType {
@@ -38,74 +41,88 @@ interface CategoriesProviderProps {
 export const CategoriesProvider: React.FC<CategoriesProviderProps> = ({
   children,
 }) => {
-  const [categories, setCategories] = useState<Category[]>([
-    {
-      id: '1',
-      name: 'Продукты',
-      icon: '🛒',
-      color: '#ef4444',
-      type: 'expense',
-    },
-    {
-      id: '2',
-      name: 'Транспорт',
-      icon: '🚗',
-      color: '#f59e0b',
-      type: 'expense',
-    },
-    {
-      id: '3',
-      name: 'Развлечения',
-      icon: '🎬',
-      color: '#8b5cf6',
-      type: 'expense',
-    },
-    {
-      id: '4',
-      name: 'Здоровье',
-      icon: '🏥',
-      color: '#10b981',
-      type: 'expense',
-    },
-    {
-      id: '5',
-      name: 'Образование',
-      icon: '📚',
-      color: '#3b82f6',
-      type: 'expense',
-    },
-    {
-      id: '6',
-      name: 'Зарплата',
-      icon: '💼',
-      color: '#06b6d4',
-      type: 'income',
-    },
-    {
-      id: '7',
-      name: 'Другое',
-      icon: '📁',
-      color: '#6b7280',
-      type: 'both',
-    },
-  ]);
+  const { user } = useAuth();
+  const [categories, setCategories] = useState<Category[]>([]);
+  const mapBackendType = (t?: BackendCategoryType): Category['type'] =>
+    t === 'INCOME' ? 'income' : t === 'EXPENSE' ? 'expense' : 'both';
+  const toBackendType = (t: Category['type']): BackendCategoryType =>
+    t === 'income' ? 'INCOME' : t === 'expense' ? 'EXPENSE' : 'BOTH';
 
-  const addCategory = (category: Omit<Category, 'id'>) => {
-    const newCategory: Category = {
-      ...category,
-      id: Date.now().toString(),
+  const mapDto = (dto: CategoryDTO): Category => ({
+    id: String(dto.id),
+    name: dto.name,
+    icon: '📁',
+    color: '#6b7280',
+    type: mapBackendType(dto.categoryType),
+    isDefault: !!dto.isDefault,
+  });
+
+  useEffect(() => {
+    if (!user) return;
+    categoriesApi
+      .allForUser(user.id)
+      .then(async (list) => {
+        if (list && list.length > 0) {
+          setCategories(list.map(mapDto));
+        } else {
+          // fallback: если бэк не вернул категории пользователя,
+          // подставим дефолтные как read-only
+          try {
+            const defs = await categoriesApi.defaults();
+            setCategories(defs.map(mapDto));
+          } catch {
+            setCategories([]);
+          }
+        }
+      })
+      .catch(async () => {
+        try {
+          const defs = await categoriesApi.defaults();
+          setCategories(defs.map(mapDto));
+        } catch {
+          setCategories([]);
+        }
+      });
+  }, [user?.id]);
+
+  const addCategory = async (category: Omit<Category, 'id'>) => {
+    if (!user) return;
+    const input: CategoryInputDTO = {
+      name: category.name,
+      iconUrl: null,
+      categoryType: toBackendType(category.type),
     };
-    setCategories((prev) => [...prev, newCategory]);
+    try {
+      const created = await categoriesApi.createForUser(user.id, input);
+      setCategories((prev) => [...prev, mapDto(created)]);
+    } catch {
+      // noop
+    }
   };
 
-  const updateCategory = (id: string, updates: Partial<Category>) => {
-    setCategories((prev) =>
-      prev.map((cat) => (cat.id === id ? { ...cat, ...updates } : cat))
-    );
+  const updateCategory = async (id: string, updates: Partial<Category>) => {
+    if (!user) return;
+    const input: CategoryInputDTO = {
+      name: updates.name || categories.find((c) => c.id === id)?.name || '',
+      iconUrl: null,
+      categoryType: updates.type ? toBackendType(updates.type) : undefined,
+    };
+    try {
+      const updated = await categoriesApi.updateForUser(user.id, Number(id), input);
+      setCategories((prev) => prev.map((cat) => (cat.id === id ? mapDto(updated) : cat)));
+    } catch {
+      // noop
+    }
   };
 
-  const deleteCategory = (id: string) => {
-    setCategories((prev) => prev.filter((cat) => cat.id !== id));
+  const deleteCategory = async (id: string) => {
+    if (!user) return;
+    try {
+      await categoriesApi.deleteForUser(user.id, Number(id));
+      setCategories((prev) => prev.filter((cat) => cat.id !== id));
+    } catch {
+      // noop
+    }
   };
 
   const getCategoryByName = (name: string) => {

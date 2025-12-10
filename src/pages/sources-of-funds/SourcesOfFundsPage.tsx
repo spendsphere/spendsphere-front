@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Sidebar from '../../shared/Sidebar';
 import Header from '../../shared/Header';
 import BalanceSummaryCards from './BalanceSummaryCards';
@@ -7,6 +7,8 @@ import AddSourceModal from './AddSourceModal';
 import EditSourceModal from './EditSourceModal';
 import DeleteSourceModal from './DeleteSourceModal';
 import './SourcesOfFundsPage.css';
+import { useAuth } from '../../context/AuthContext';
+import { accountsApi, type AccountDTO, type AccountCreateDTO, type AccountUpdateDTO } from '../../api/accounts';
 
 export interface FundsSource {
   id: string;
@@ -16,31 +18,61 @@ export interface FundsSource {
 }
 
 const SourcesOfFundsPage: React.FC = () => {
+  const { user } = useAuth();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingSource, setEditingSource] = useState<FundsSource | null>(null);
   const [deletingSource, setDeletingSource] = useState<FundsSource | null>(
     null
   );
-  const [sources, setSources] = useState<FundsSource[]>([
-    {
-      id: '1',
-      name: 'Карта Tinkoff',
-      type: 'Дебетовая',
-      balance: 35000,
-    },
-    {
-      id: '2',
-      name: 'Карта Сбербанк',
-      type: 'Кредитная',
-      balance: -5000,
-    },
-    {
-      id: '3',
-      name: 'Наличные',
-      type: 'Наличные',
-      balance: 27320,
-    },
-  ]);
+  const [sources, setSources] = useState<FundsSource[]>([]);
+
+  const toUiType = (t: AccountDTO['accountType']): FundsSource['type'] => {
+    switch (t) {
+      case 'CREDIT':
+        return 'Кредитная';
+      case 'CASH':
+        return 'Наличные';
+      case 'CARD':
+        return 'Дебетовая';
+      default:
+        return 'Счет';
+    }
+  };
+
+  const fromUiType = (t: FundsSource['type']): AccountCreateDTO['accountType'] => {
+    switch (t) {
+      case 'Кредитная':
+        return 'CREDIT';
+      case 'Наличные':
+        return 'CASH';
+      case 'Дебетовая':
+        return 'CARD';
+      default:
+        return 'OTHER';
+    }
+  };
+
+  const load = async () => {
+    if (!user) return;
+    try {
+      const list = await accountsApi.list(user.id);
+      setSources(
+        list.map((a) => ({
+          id: String(a.id),
+          name: a.name,
+          type: toUiType(a.accountType),
+          balance: Number(a.balance),
+        })),
+      );
+    } catch {
+      setSources([]);
+    }
+  };
+
+  useEffect(() => {
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
 
   const handleOpenAddModal = () => {
     setIsAddModalOpen(true);
@@ -58,28 +90,75 @@ const SourcesOfFundsPage: React.FC = () => {
     setDeletingSource(source);
   };
 
-  const handleSaveAdd = (newSource: Omit<FundsSource, 'id'>) => {
-    const source: FundsSource = {
-      ...newSource,
-      id: Date.now().toString(),
-    };
-    setSources((prev) => [source, ...prev]);
-    setIsAddModalOpen(false);
+  const handleSaveAdd = async (newSource: Omit<FundsSource, 'id'>) => {
+    if (!user) return;
+    try {
+      const body: AccountCreateDTO = {
+        accountType: fromUiType(newSource.type),
+        balance: newSource.balance,
+        currency: 'RUB',
+        name: newSource.name,
+        iconUrl: null,
+        creditLimit: null,
+        isActive: true,
+        includeInTotal: true,
+      };
+      const created = await accountsApi.create(user.id, body);
+      setSources((prev) => [
+        {
+          id: String(created.id),
+          name: created.name,
+          type: toUiType(created.accountType),
+          balance: Number(created.balance),
+        },
+        ...prev,
+      ]);
+      setIsAddModalOpen(false);
+    } catch {
+      // noop
+    }
   };
 
-  const handleSaveEdit = (updatedSource: FundsSource) => {
-    setSources((prev) =>
-      prev.map((s) => (s.id === updatedSource.id ? updatedSource : s))
-    );
-    setEditingSource(null);
-  };
-
-  const handleConfirmDelete = () => {
-    if (deletingSource) {
+  const handleSaveEdit = async (updatedSource: FundsSource) => {
+    if (!user) return;
+    try {
+      const body: AccountUpdateDTO = {
+        accountType: fromUiType(updatedSource.type),
+        balance: updatedSource.balance,
+        currency: 'RUB',
+        name: updatedSource.name,
+        iconUrl: null,
+        creditLimit: null,
+        isActive: true,
+        includeInTotal: true,
+      };
+      const updated = await accountsApi.update(user.id, Number(updatedSource.id), body);
       setSources((prev) =>
-        prev.filter((s) => s.id !== deletingSource.id)
+        prev.map((s) =>
+          s.id === updatedSource.id
+            ? {
+                id: String(updated.id),
+                name: updated.name,
+                type: toUiType(updated.accountType),
+                balance: Number(updated.balance),
+              }
+            : s,
+        ),
       );
+      setEditingSource(null);
+    } catch {
+      // noop
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deletingSource || !user) return;
+    try {
+      await accountsApi.remove(user.id, Number(deletingSource.id));
+      setSources((prev) => prev.filter((s) => s.id !== deletingSource.id));
       setDeletingSource(null);
+    } catch {
+      // noop
     }
   };
 

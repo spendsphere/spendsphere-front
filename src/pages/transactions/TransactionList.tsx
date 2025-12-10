@@ -1,5 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Transaction } from './TransactionsPage';
+import { useCategories } from '../../context/CategoriesContext';
+import { useAuth } from '../../context/AuthContext';
+import { accountsApi } from '../../api/accounts';
 import './TransactionList.css';
 
 interface TransactionListProps {
@@ -13,22 +16,23 @@ const TransactionList: React.FC<TransactionListProps> = ({
   onEdit,
   onDelete,
 }) => {
+  const { getAllCategories } = useCategories();
+  const { user } = useAuth();
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
-  const [dateFrom, setDateFrom] = useState<string>('2025-11-10');
-  const [dateTo, setDateTo] = useState<string>('2025-11-10');
+  const [dateFrom, setDateFrom] = useState<string>(() => new Date().toISOString().split('T')[0]);
+  const [dateTo, setDateTo] = useState<string>(() => new Date().toISOString().split('T')[0]);
   const [accountFilter, setAccountFilter] = useState<string>('all');
+  const [accountNames, setAccountNames] = useState<string[]>([]);
 
-  const categories = [
-    'Продукты',
-    'Транспорт',
-    'Развлечения',
-    'Здоровье',
-    'Образование',
-    'Зарплата',
-    'Другое',
-  ];
+  const categories = useMemo(() => getAllCategories().map((c) => c.name), [getAllCategories]);
 
-  const accounts = ['Tinkoff', 'Сбербанк', 'Наличные'];
+  useEffect(() => {
+    if (!user) return;
+    accountsApi
+      .list(user.id)
+      .then((list) => setAccountNames(list.map((a) => a.name)))
+      .catch(() => setAccountNames([]));
+  }, [user?.id]);
 
   const filteredTransactions = useMemo(() => {
     return transactions.filter((transaction) => {
@@ -41,7 +45,10 @@ const TransactionList: React.FC<TransactionListProps> = ({
       if (accountFilter !== 'all' && transaction.source !== accountFilter) {
         return false;
       }
-      if (transaction.date < dateFrom || transaction.date > dateTo) {
+      if (dateFrom && transaction.date < dateFrom) {
+        return false;
+      }
+      if (dateTo && transaction.date > dateTo) {
         return false;
       }
       return true;
@@ -101,9 +108,9 @@ const TransactionList: React.FC<TransactionListProps> = ({
           onChange={(e) => setAccountFilter(e.target.value)}
         >
           <option value="all">Все счета</option>
-          {accounts.map((account) => (
-            <option key={account} value={account}>
-              {account}
+          {accountNames.map((name) => (
+            <option key={name} value={name}>
+              {name}
             </option>
           ))}
         </select>

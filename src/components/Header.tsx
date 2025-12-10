@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Header.css';
 
 interface HeaderProps {
@@ -17,13 +18,13 @@ const Header: React.FC<HeaderProps> = ({ onOpenModal, title = 'Главная' }
             Добавить запись
           </button>
         )}
-        <div className="user-avatar">
+        <Link to="/profile" className="user-avatar">
           <img
             src="https://via.placeholder.com/40?text=U"
             alt="User"
             className="avatar-img"
           />
-        </div>
+        </Link>
       </div>
     </header>
   );

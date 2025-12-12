@@ -9,8 +9,8 @@
 }
 
 .add-category-card {
-  background-color: #ffffff;
-  border: 2px dashed #d1d5db;
+  background-color: var(--card-bg);
+  border: 2px dashed var(--border-color);
   border-radius: 12px;
   padding: 20px;
   display: flex;
@@ -19,12 +19,12 @@
   justify-content: center;
   gap: 8px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
 }
 
 .add-category-card:hover {
   border-color: #10b981;
-  background-color: #f0fdf4;
+  background-color: rgba(16, 185, 129, 0.1);
 }
 
 .add-icon {
@@ -37,8 +37,9 @@
 .add-text {
   font-size: 14px;
   font-weight: 500;
-  color: #6b7280;
+  color: var(--text-secondary);
   text-align: center;
+  transition: color 0.3s ease;
 }
 
 .add-category-card:hover .add-text {
@@ -46,20 +47,20 @@
 }
 
 .category-card {
-  background-color: #ffffff;
-  border: 1px solid #e5e7eb;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   display: flex;
   gap: 12px;
   align-items: center;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
   position: relative;
 }
 
 .category-card:hover {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 .category-icon {
@@ -83,7 +84,8 @@
 .category-name {
   font-size: 16px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
+  transition: color 0.3s ease;
 }
 
 .category-actions {
@@ -110,7 +112,7 @@
 }
 
 .btn-action:hover {
-  background-color: #f3f4f6;
+  background-color: var(--hover-bg);
 }
 
 .btn-action.delete:hover {

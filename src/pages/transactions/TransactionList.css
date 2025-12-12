@@ -9,8 +9,9 @@
 .page-title {
   font-size: 28px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   margin: 0;
+  transition: color 0.3s ease;
 }
 
 .filters-bar {
@@ -24,13 +25,13 @@
 .filter-select,
 .filter-date {
   padding: 10px 12px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   font-size: 14px;
-  color: #1f2937;
-  background-color: #ffffff;
+  color: var(--text-primary);
+  background-color: var(--card-bg);
   cursor: pointer;
-  transition: border-color 0.2s;
+  transition: all 0.3s ease;
 }
 
 .filter-select:focus,
@@ -74,22 +75,23 @@
 .no-transactions {
   text-align: center;
   padding: 48px;
-  color: #6b7280;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
 }
 
 .transaction-card {
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: box-shadow 0.2s;
+  transition: all 0.3s ease;
 }
 
 .transaction-card:hover {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 .transaction-main {
@@ -101,8 +103,9 @@
 
 .transaction-date {
   font-size: 14px;
-  color: #6b7280;
+  color: var(--text-secondary);
   min-width: 100px;
+  transition: color 0.3s ease;
 }
 
 .transaction-details {
@@ -125,7 +128,8 @@
 .transaction-category-name {
   font-size: 16px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
+  transition: color 0.3s ease;
 }
 
 .transaction-meta-info {
@@ -133,11 +137,13 @@
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: #6b7280;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
 }
 
 .transaction-note {
-  color: #374151;
+  color: var(--text-primary);
+  transition: color 0.3s ease;
 }
 
 .separator {
@@ -199,7 +205,7 @@
 }
 
 .btn-edit:hover {
-  background-color: #f3f4f6;
+  background-color: var(--hover-bg);
 }
 
 .btn-delete:hover {

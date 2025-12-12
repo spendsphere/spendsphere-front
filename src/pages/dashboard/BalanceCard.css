@@ -17,6 +17,7 @@
   line-height: 1;
   font-weight: 700;
   margin-bottom: 24px;
+  color: white !important;
 }
 
 .balance-details {
@@ -38,13 +39,6 @@
 .balance-card .balance-value {
   font-size: clamp(12px, 1.2vw, 18px) !important;
   font-weight: 600;
-}
-
-.balance-item.income .balance-value {
-  color: #10b981;
-}
-
-.balance-item.expense .balance-value {
-  color: #ef4444;
+  color: white !important;
 }
 

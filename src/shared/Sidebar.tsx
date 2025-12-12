@@ -17,7 +17,6 @@ const Sidebar: React.FC = () => {
     { icon: '🏦', label: 'Источники средств', path: '/sources-of-funds' },
     { icon: '📁', label: 'Категории', path: '/categories' },
     { icon: '👤', label: 'Профиль', path: '/profile' },
-    { icon: '⚙️', label: 'Настройки', path: null },
   ];
 
   return (

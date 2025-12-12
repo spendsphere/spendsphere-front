@@ -3,23 +3,26 @@
 }
 
 .request-card {
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   border-radius: 16px;
   padding: 32px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
 }
 
 .request-title {
   font-size: 24px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   margin: 0 0 8px 0;
+  transition: color 0.3s ease;
 }
 
 .request-description {
   font-size: 15px;
-  color: #6b7280;
+  color: var(--text-secondary);
   margin: 0 0 24px 0;
+  transition: color 0.3s ease;
 }
 
 .request-form {
@@ -39,17 +42,17 @@
   align-items: center;
   gap: 8px;
   padding: 12px 16px;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
   font-size: 15px;
-  color: #374151;
+  color: var(--text-primary);
 }
 
 .period-option:hover {
   border-color: #8b5cf6;
-  background-color: #faf5ff;
+  background-color: rgba(139, 92, 246, 0.1);
 }
 
 .period-option input[type='radio'] {
@@ -66,7 +69,7 @@
 
 .period-option:has(input[type='radio']:checked) {
   border-color: #8b5cf6;
-  background-color: #faf5ff;
+  background-color: rgba(139, 92, 246, 0.1);
 }
 
 .btn-request {

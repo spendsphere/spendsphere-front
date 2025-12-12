@@ -1,15 +1,17 @@
 .payment-history {
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
 }
 
 .payment-history-title {
   font-size: 20px;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-primary);
   margin: 0 0 20px 0;
+  transition: color 0.3s ease;
 }
 
 .payment-history-list {
@@ -24,14 +26,14 @@
   gap: 16px;
   padding: 16px;
   border-radius: 12px;
-  background-color: #f9fafb;
-  transition: all 0.2s;
+  background-color: var(--bg-tertiary);
+  transition: all 0.3s ease;
 }
 
 .payment-item:hover {
-  background-color: #f3f4f6;
+  background-color: var(--hover-bg);
   transform: translateY(-2px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .payment-icon {
@@ -55,18 +57,21 @@
 .payment-title {
   font-size: 16px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
+  transition: color 0.3s ease;
 }
 
 .payment-meta {
   font-size: 14px;
-  color: #6b7280;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
 }
 
 .payment-amount {
   font-size: 16px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   flex-shrink: 0;
+  transition: color 0.3s ease;
 }
 

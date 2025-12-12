@@ -4,7 +4,6 @@ import Sidebar from '../../shared/Sidebar';
 import ProfileInfo from './ProfileInfo';
 import QuickStats from './QuickStats';
 import PaymentHistory from './PaymentHistory';
-import EditProfileModal from './EditProfileModal';
 import './ProfilePage.css';
 import { useAuth } from '../../context/AuthContext';
 import { userApi } from '../../api/user';
@@ -12,10 +11,10 @@ import { fetchTransactions } from '../../api/transactions';
 import { remindersApi } from '../../api/reminders';
 import { categoriesApi } from '../../api/categories';
 import { useAuth as useAuthContext } from '../../context/AuthContext';
+import { accountsApi } from '../../api/accounts';
 
 const ProfilePage: React.FC = () => {
   const { user } = useAuth();
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { logout } = useAuthContext();
   
   // Данные профиля
@@ -33,15 +32,34 @@ const ProfilePage: React.FC = () => {
     // наполняем из бекенда
     userApi
       .getProfile(user.id)
-      .then((u) =>
-        setProfile({
-          name: `${u.name || ''} ${u.surname || ''}`.trim(),
-          email: u.email,
-          avatar: u.photoUrl || '',
-          isPremium: !!u.isPremium,
-          balance: 0,
-        }),
-      )
+      .then((u) => {
+        // Получаем баланс из источников средств
+        accountsApi
+          .list(user.id)
+          .then((accounts) => {
+            // Суммируем баланс всех активных аккаунтов с includeInTotal: true
+            const totalBalance = accounts
+              .filter((acc) => acc.isActive && acc.includeInTotal)
+              .reduce((sum, acc) => sum + acc.balance, 0);
+            
+            setProfile({
+              name: `${u.name || ''} ${u.surname || ''}`.trim(),
+              email: u.email,
+              avatar: u.photoUrl || '',
+              isPremium: !!u.isPremium,
+              balance: totalBalance,
+            });
+          })
+          .catch(() => {
+            setProfile({
+              name: `${u.name || ''} ${u.surname || ''}`.trim(),
+              email: u.email,
+              avatar: u.photoUrl || '',
+              isPremium: !!u.isPremium,
+              balance: 0,
+            });
+          });
+      })
       .catch(() => {
         setProfile((p) => ({
           ...p,
@@ -98,14 +116,6 @@ const ProfilePage: React.FC = () => {
     },
   ]);
 
-  const handleSaveProfile = (updatedProfile: Partial<typeof profile>) => {
-    setProfile((prev) => ({ ...prev, ...updatedProfile }));
-    setIsEditModalOpen(false);
-  };
-
-  const handleAvatarUpdate = (newAvatar: string) => {
-    setProfile((prev) => ({ ...prev, avatar: newAvatar }));
-  };
 
   return (
     <div className="profile-page">
@@ -115,24 +125,12 @@ const ProfilePage: React.FC = () => {
         <div className="profile-page-content">
           <ProfileInfo
             profile={profile}
-            onEdit={() => setIsEditModalOpen(true)}
-            onResetPassword={() => {
-              // TODO: Реализовать сброс пароля
-              alert('Функция сброса пароля будет реализована');
-            }}
             onLogout={logout}
           />
           <QuickStats stats={stats} />
           <PaymentHistory payments={paymentHistory} />
         </div>
       </div>
-
-      <EditProfileModal
-        isOpen={isEditModalOpen}
-        profile={profile}
-        onClose={() => setIsEditModalOpen(false)}
-        onSave={handleSaveProfile}
-      />
     </div>
   );
 };

@@ -1,13 +1,38 @@
 .profile-info-card {
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   border-radius: 16px;
   padding: 32px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   gap: 20px;
+  position: relative;
+  transition: background-color 0.3s ease;
+}
+
+.theme-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #10b981 0%, #8b5cf6 100%);
+  border: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1) rotate(10deg);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.5);
 }
 
 .profile-avatar-container {
@@ -19,7 +44,8 @@
   height: 120px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid #f3f4f6;
+  border: 4px solid var(--border-color);
+  transition: border-color 0.3s ease;
 }
 
 .profile-details {
@@ -33,7 +59,8 @@
 .profile-name {
   font-size: 24px;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-primary);
+  transition: color 0.3s ease;
 }
 
 .profile-premium-badge {
@@ -49,14 +76,16 @@
 
 .profile-email {
   font-size: 15px;
-  color: #6b7280;
+  color: var(--text-secondary);
   margin-top: 4px;
+  transition: color 0.3s ease;
 }
 
 .profile-balance {
   font-size: 16px;
-  color: #374151;
+  color: var(--text-primary);
   margin-top: 8px;
+  transition: color 0.3s ease;
 }
 
 .balance-amount {
@@ -73,10 +102,10 @@
   margin-top: 8px;
 }
 
-.btn-edit-profile,
-.btn-reset-password {
+.btn-logout {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   padding: 12px 24px;
   border-radius: 10px;
@@ -85,28 +114,15 @@
   border: none;
   cursor: pointer;
   transition: all 0.2s;
-}
-
-.btn-edit-profile {
-  background-color: #10b981;
+  min-width: 200px;
+  background: linear-gradient(135deg, #10b981 0%, #8b5cf6 100%);
   color: white;
 }
 
-.btn-edit-profile:hover {
-  background-color: #059669;
+.btn-logout:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
-}
-
-.btn-reset-password {
-  background-color: #8b5cf6;
-  color: white;
-}
-
-.btn-reset-password:hover {
-  background-color: #7c3aed;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(139, 92, 246, 0.3);
+  box-shadow: 0 6px 12px rgba(16, 185, 129, 0.4);
+  filter: brightness(1.1);
 }
 
 .btn-icon {

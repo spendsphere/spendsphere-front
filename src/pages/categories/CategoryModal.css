@@ -19,8 +19,9 @@
 }
 
 .color-option.selected {
-  border-color: #1f2937;
-  box-shadow: 0 0 0 2px white, 0 0 0 4px #1f2937;
+  border-color: var(--text-primary);
+  box-shadow: 0 0 0 2px var(--card-bg), 0 0 0 4px var(--text-primary);
+  transition: all 0.3s ease;
 }
 
 .modal-body {
@@ -29,9 +30,10 @@
 
 .modal-body p {
   margin: 0 0 12px 0;
-  color: #374151;
+  color: var(--text-primary);
   font-size: 15px;
   line-height: 1.5;
+  transition: color 0.3s ease;
 }
 
 .warning-text {

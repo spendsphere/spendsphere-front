@@ -8,14 +8,16 @@
 .tips-empty {
   text-align: center;
   padding: 64px;
-  color: #6b7280;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
 }
 
 .tip-group-card {
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
 }
 
 .tip-group-header {
@@ -24,7 +26,8 @@
   align-items: flex-start;
   margin-bottom: 20px;
   padding-bottom: 16px;
-  border-bottom: 2px solid #f3f4f6;
+  border-bottom: 2px solid var(--border-color);
+  transition: border-color 0.3s ease;
 }
 
 .tip-group-info {
@@ -34,8 +37,9 @@
 .tip-group-goal {
   font-size: 20px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   margin: 0 0 8px 0;
+  transition: color 0.3s ease;
 }
 
 .tip-group-date {
@@ -47,8 +51,9 @@
 
 .tip-group-created {
   font-size: 13px;
-  color: #6b7280;
+  color: var(--text-secondary);
   margin: 0;
+  transition: color 0.3s ease;
 }
 
 .btn-delete-group {
@@ -79,17 +84,17 @@
 }
 
 .tip-card {
-  background-color: #f9fafb;
+  background-color: var(--bg-tertiary);
   border-radius: 12px;
   padding: 16px;
   display: flex;
   gap: 12px;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: all 0.3s ease;
 }
 
 .tip-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .tip-icon {
@@ -107,9 +112,10 @@
 .tip-text {
   font-size: 15px;
   font-weight: 500;
-  color: #1f2937;
+  color: var(--text-primary);
   margin: 0;
   line-height: 1.5;
+  transition: color 0.3s ease;
 }
 
 .tip-impact {

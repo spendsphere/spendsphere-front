@@ -9,8 +9,8 @@
 }
 
 .add-source-card {
-  background-color: #ffffff;
-  border: 2px dashed #d1d5db;
+  background-color: var(--card-bg);
+  border: 2px dashed var(--border-color);
   border-radius: 12px;
   padding: 32px;
   display: flex;
@@ -19,13 +19,13 @@
   justify-content: center;
   gap: 12px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
   min-height: 150px;
 }
 
 .add-source-card:hover {
   border-color: #8b5cf6;
-  background-color: #faf5ff;
+  background-color: rgba(139, 92, 246, 0.1);
 }
 
 .add-icon {
@@ -38,8 +38,9 @@
 .add-text {
   font-size: 16px;
   font-weight: 500;
-  color: #6b7280;
+  color: var(--text-secondary);
   text-align: center;
+  transition: color 0.3s ease;
 }
 
 .add-source-card:hover .add-text {
@@ -47,19 +48,19 @@
 }
 
 .source-card {
-  background-color: #ffffff;
-  border: 1px solid #e5e7eb;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  transition: box-shadow 0.2s;
+  transition: all 0.3s ease;
 }
 
 .source-card:hover {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 .source-content {
@@ -76,13 +77,15 @@
 .source-name {
   font-size: 18px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   margin: 0;
+  transition: color 0.3s ease;
 }
 
 .source-type {
   font-size: 14px;
-  color: #6b7280;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
 }
 
 .source-balance {
@@ -122,7 +125,7 @@
 }
 
 .btn-edit:hover {
-  background-color: #f3f4f6;
+  background-color: var(--hover-bg);
 }
 
 .btn-delete:hover {

@@ -12,24 +12,25 @@
 .analytics-title {
   font-size: 24px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   margin: 0;
+  transition: color 0.3s ease;
 }
 
 .btn-new-request {
   padding: 10px 20px;
-  background-color: #f3f4f6;
-  color: #374151;
+  background-color: var(--hover-bg);
+  color: var(--text-primary);
   border: none;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
 }
 
 .btn-new-request:hover {
-  background-color: #e5e7eb;
+  background-color: var(--border-color);
 }
 
 .analytics-grid {
@@ -39,17 +40,19 @@
 }
 
 .analytics-card {
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
 }
 
 .card-title {
   font-size: 18px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   margin: 0 0 20px 0;
+  transition: color 0.3s ease;
 }
 
 .chart-container {
@@ -85,7 +88,8 @@
 
 .legend-label {
   font-size: 13px;
-  color: #6b7280;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
 }
 
 .pie-chart-placeholder {
@@ -96,10 +100,11 @@
 
 .chart-note {
   font-size: 13px;
-  color: #9ca3af;
+  color: var(--text-tertiary);
   text-align: center;
   padding: 20px;
   font-style: italic;
+  transition: color 0.3s ease;
 }
 
 .category-item {
@@ -118,13 +123,15 @@
 .category-name {
   flex: 1;
   font-size: 14px;
-  color: #374151;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
 }
 
 .category-amount {
   font-size: 14px;
   font-weight: 500;
-  color: #1f2937;
+  color: var(--text-primary);
+  transition: color 0.3s ease;
 }
 
 .line-chart-placeholder,
@@ -209,16 +216,18 @@
 
 .expense-name {
   font-size: 14px;
-  color: #374151;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
 }
 
 .expense-bar-container {
   flex: 1;
   height: 24px;
-  background-color: #f3f4f6;
+  background-color: var(--bg-tertiary);
   border-radius: 12px;
   overflow: hidden;
   position: relative;
+  transition: background-color 0.3s ease;
 }
 
 .expense-bar {
@@ -230,8 +239,9 @@
 .expense-amount {
   font-size: 14px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   min-width: 80px;
   text-align: right;
+  transition: color 0.3s ease;
 }
 

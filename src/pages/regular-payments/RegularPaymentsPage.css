@@ -1,7 +1,8 @@
 .regular-payments-page {
   display: flex;
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: var(--bg-secondary);
+  transition: background-color 0.3s ease;
 }
 
 .regular-payments-page-main {

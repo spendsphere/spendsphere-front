@@ -56,27 +56,6 @@
   transition: color 0.3s ease;
 }
 
-.btn-delete-group {
-  background-color: #ef4444;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 24px;
-  line-height: 1;
-  transition: background-color 0.2s;
-  flex-shrink: 0;
-}
-
-.btn-delete-group:hover {
-  background-color: #dc2626;
-}
-
 .tips-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -88,8 +67,10 @@
   border-radius: 12px;
   padding: 16px;
   display: flex;
+  flex-direction: column;
   gap: 12px;
   transition: all 0.3s ease;
+  border-left: 4px solid transparent;
 }
 
 .tip-card:hover {
@@ -97,9 +78,56 @@
   box-shadow: var(--shadow-sm);
 }
 
+/* Priority colors */
+.tip-card.priority-high {
+  border-left-color: #ef4444;
+}
+
+.tip-card.priority-medium {
+  border-left-color: #f59e0b;
+}
+
+.tip-card.priority-low {
+  border-left-color: #10b981;
+}
+
+.tip-card.priority-default {
+  border-left-color: #8b5cf6;
+}
+
+.tip-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .tip-icon {
-  font-size: 32px;
+  font-size: 24px;
   flex-shrink: 0;
+}
+
+.tip-priority-badge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background-color: rgba(139, 92, 246, 0.1);
+  color: #8b5cf6;
+}
+
+.priority-high .tip-priority-badge {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.priority-medium .tip-priority-badge {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+}
+
+.priority-low .tip-priority-badge {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #10b981;
 }
 
 .tip-content {
@@ -111,7 +139,7 @@
 
 .tip-text {
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-primary);
   margin: 0;
   line-height: 1.5;
@@ -120,8 +148,9 @@
 
 .tip-impact {
   font-size: 13px;
-  color: #10b981;
-  font-weight: 500;
+  color: var(--text-secondary);
   margin: 0;
+  line-height: 1.4;
+  transition: color 0.3s ease;
 }
 

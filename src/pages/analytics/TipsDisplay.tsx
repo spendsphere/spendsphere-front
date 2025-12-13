@@ -19,6 +19,40 @@ const TipsDisplay: React.FC<TipsDisplayProps> = ({
     return `${day}.${month}.${year}`;
   };
 
+  const getPriorityClass = (category: string): string => {
+    if (category.includes('Важно')) return 'high';
+    if (category.includes('Средний')) return 'medium';
+    if (category.includes('Низкий')) return 'low';
+    return 'default';
+  };
+
+  const getPriorityIcon = (category: string): string => {
+    if (category.includes('Важно')) return '🔴';
+    if (category.includes('Средний')) return '🟡';
+    if (category.includes('Низкий')) return '🟢';
+    return '💡';
+  };
+
+  const getPriorityValue = (category: string): number => {
+    if (category.includes('Важно')) return 1;
+    if (category.includes('Средний')) return 2;
+    if (category.includes('Низкий')) return 3;
+    return 4;
+  };
+
+  const sortTips = (tips: Tip[]): Tip[] => {
+    return [...tips].sort((a, b) => {
+      const priorityA = getPriorityValue(a.category);
+      const priorityB = getPriorityValue(b.category);
+      
+      if (priorityA !== priorityB) {
+        return priorityA - priorityB;
+      }
+      
+      return parseInt(a.id) - parseInt(b.id);
+    });
+  };
+
   if (tipGroups.length === 0) {
     return (
       <div className="tips-empty">
@@ -29,7 +63,7 @@ const TipsDisplay: React.FC<TipsDisplayProps> = ({
 
   return (
     <div className="tips-display">
-      {tipGroups.map((group) => (
+      {tipGroups.slice(0, 10).map((group) => (
         <div key={group.id} className="tip-group-card">
           <div className="tip-group-header">
             <div className="tip-group-info">
@@ -43,24 +77,18 @@ const TipsDisplay: React.FC<TipsDisplayProps> = ({
                 Создано: {formatDate(group.createdAt)}
               </p>
             </div>
-            <button
-              className="btn-delete-group"
-              onClick={() => onDeleteGroup(group.id)}
-              title="Удалить группу советов"
-            >
-              ×
-            </button>
           </div>
           <div className="tips-grid">
-            {group.tips.map((tip) => (
-              <div key={tip.id} className="tip-card">
-                <div className="tip-icon">
-                  {tip.category === 'Экономия' && '💰'}
-                  {tip.category === 'Оптимизация' && '⚡'}
-                  {tip.category === 'Сбережения' && '🎯'}
+            {sortTips(group.tips).map((tip) => (
+              <div key={tip.id} className={`tip-card priority-${getPriorityClass(tip.category)}`}>
+                <div className="tip-header">
+                  <div className="tip-icon">
+                    {getPriorityIcon(tip.category)}
+                  </div>
+                  <span className="tip-priority-badge">{tip.category}</span>
                 </div>
                 <div className="tip-content">
-                  <p className="tip-text">{tip.text}</p>
+                  <h4 className="tip-text">{tip.text}</h4>
                   <p className="tip-impact">{tip.impact}</p>
                 </div>
               </div>

@@ -4,6 +4,7 @@ import Header from '../../shared/Header';
 import BalanceCard from './BalanceCard';
 import QuickActions from './QuickActions';
 import LatestTransactions from './LatestTransactions';
+import RecentAdvices from './RecentAdvices';
 import SourcesOfFunds from './SourcesOfFunds';
 import AddTransactionModal from '../../shared/AddTransactionModal';
 import './Dashboard.css';
@@ -29,6 +30,7 @@ const Dashboard: React.FC = () => {
           <QuickActions onOpenModal={handleOpenModal} />
           <LatestTransactions />
           <SourcesOfFunds />
+          <RecentAdvices />
         </div>
       </div>
       <AddTransactionModal isOpen={isModalOpen} onClose={handleCloseModal} />

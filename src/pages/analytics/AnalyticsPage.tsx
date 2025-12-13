@@ -1,4 +1,5 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import Sidebar from '../../shared/Sidebar';
 import Header from '../../shared/Header';
 import AnalyticsTabs from './AnalyticsTabs';
@@ -7,11 +8,17 @@ import TipsRequest from './TipsRequest';
 import AnalyticsDisplay from './AnalyticsDisplay';
 import StatisticsDisplay from './StatisticsDisplay';
 import TipsDisplay from './TipsDisplay';
+import AdviceNotificationModal from '../../shared/AdviceNotificationModal';
 import { AuthContext } from '../../context/AuthContext';
 import {
   fetchTransactionStatistics,
   TransactionStatisticsDTO,
 } from '../../api/transactions';
+import {
+  requestAdvice,
+  getRecentAdvices,
+  AdviceResponseDTO,
+} from '../../api/advices';
 import './AnalyticsPage.css';
 
 export interface AnalyticsData {
@@ -44,7 +51,10 @@ export interface TipGroup {
 const AnalyticsPage: React.FC = () => {
   const authContext = useContext(AuthContext);
   const user = authContext?.user;
-  const [activeTab, setActiveTab] = useState<'analytics' | 'tips'>('analytics');
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState<'analytics' | 'tips'>(
+    (location.state as { activeTab?: 'analytics' | 'tips' })?.activeTab || 'analytics'
+  );
   const [isRequestingAnalytics, setIsRequestingAnalytics] = useState(false);
   const [isRequestingTips, setIsRequestingTips] = useState(false);
   const [statisticsData, setStatisticsData] =
@@ -52,6 +62,8 @@ const AnalyticsPage: React.FC = () => {
   const [statisticsPeriod, setStatisticsPeriod] = useState<number>(1);
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
   const [tipGroups, setTipGroups] = useState<TipGroup[]>([]);
+  const [showAdviceNotification, setShowAdviceNotification] = useState(false);
+  const [isLoadingAdvices, setIsLoadingAdvices] = useState(false);
 
   const handleRequestStatistics = async (period: number) => {
     if (!user?.id) {
@@ -75,52 +87,81 @@ const AnalyticsPage: React.FC = () => {
     }
   };
 
+  // Загрузка всех советов при монтировании компонента и при переключении на вкладку
+  useEffect(() => {
+    if (activeTab === 'tips' && user?.id) {
+      loadAllAdvices();
+    }
+  }, [activeTab, user?.id]);
+
+  const loadAllAdvices = async () => {
+    if (!user?.id) return;
+
+    setIsLoadingAdvices(true);
+    try {
+      const advices = await getRecentAdvices(user.id);
+      const convertedTipGroups = convertAdvicesToTipGroups(advices);
+      setTipGroups(convertedTipGroups);
+    } catch (error) {
+      console.error('Error loading advices:', error);
+    } finally {
+      setIsLoadingAdvices(false);
+    }
+  };
+
+  const convertAdvicesToTipGroups = (
+    advices: AdviceResponseDTO[],
+  ): TipGroup[] => {
+    return advices.map((advice) => ({
+      id: advice.id.toString(),
+      goal: advice.goal,
+      targetDate: advice.targetDate || undefined,
+      tips: advice.items.map((item) => ({
+        id: item.id.toString(),
+        text: item.title,
+        category: getPriorityCategory(item.priority),
+        impact: item.description,
+      })),
+      createdAt: advice.createdAt,
+    }));
+  };
+
+  const getPriorityCategory = (priority: string): string => {
+    switch (priority) {
+      case 'High':
+        return 'Важно';
+      case 'Medium':
+        return 'Средний приоритет';
+      case 'Low':
+        return 'Низкий приоритет';
+      default:
+        return 'Совет';
+    }
+  };
+
   const handleRequestTips = async (goal: string, targetDate?: string) => {
+    if (!user?.id) {
+      alert('Ошибка: пользователь не авторизован');
+      return;
+    }
+
     setIsRequestingTips(true);
     try {
-      // Mock API call - simulate delay
-      await new Promise((resolve) => setTimeout(resolve, 2500));
-
-      // Mock tips
-      const mockTips: Tip[] = [
-        {
-          id: '1',
-          text: 'Сократи расходы на подписки',
-          category: 'Экономия',
-          impact: 'До 1500 Р в месяц',
-        },
-        {
-          id: '2',
-          text: 'Перенеси оплату интернета на дебетовую карту для кэшбэка',
-          category: 'Оптимизация',
-          impact: 'До 200 Р в месяц',
-        },
-        {
-          id: '3',
-          text: 'Ставь цель сбережений',
-          category: 'Сбережения',
-          impact: 'Отложить 15% дохода ежемесячно',
-        },
-        {
-          id: '4',
-          text: 'Используй быстрые платежи для регулярных расходов',
-          category: 'Оптимизация',
-          impact: 'Экономия времени',
-        },
-      ];
-
-      const newGroup: TipGroup = {
-        id: Date.now().toString(),
+      await requestAdvice(user.id, {
         goal,
-        targetDate,
-        tips: mockTips,
-        createdAt: new Date().toISOString(),
-      };
+        targetDate: targetDate || null,
+      });
 
-      setTipGroups((prev) => [newGroup, ...prev]);
+      // Показать модальное окно об успешной отправке
+      setShowAdviceNotification(true);
+
+      // Автоматически обновить список через 10 секунд
+      setTimeout(() => {
+        loadAllAdvices();
+      }, 10000);
     } catch (error) {
-      console.error('Error generating tips:', error);
-      alert('Ошибка при генерации советов. Попробуйте еще раз.');
+      console.error('Error requesting advice:', error);
+      alert('Ошибка при отправке запроса. Попробуйте еще раз.');
     } finally {
       setIsRequestingTips(false);
     }
@@ -165,20 +206,26 @@ const AnalyticsPage: React.FC = () => {
                 onRequest={handleRequestTips}
                 isRequesting={isRequestingTips}
               />
-              {isRequestingTips && (
+              {isLoadingAdvices && (
                 <div className="loading-state">
                   <div className="loading-spinner"></div>
-                  <p>Генерация советов...</p>
+                  <p>Загрузка советов...</p>
                 </div>
               )}
-              <TipsDisplay
-                tipGroups={tipGroups}
-                onDeleteGroup={handleDeleteTipGroup}
-              />
+              {!isLoadingAdvices && (
+                <TipsDisplay
+                  tipGroups={tipGroups}
+                  onDeleteGroup={handleDeleteTipGroup}
+                />
+              )}
             </>
           )}
         </div>
       </div>
+      <AdviceNotificationModal
+        isOpen={showAdviceNotification}
+        onClose={() => setShowAdviceNotification(false)}
+      />
     </div>
   );
 };

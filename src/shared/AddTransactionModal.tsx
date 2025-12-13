@@ -14,7 +14,7 @@ import './AddTransactionModal.css';
 interface AddTransactionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave?: (transaction: Omit<Transaction, 'id'>) => void;
+  onSave?: (_transaction: Omit<Transaction, 'id'>) => void;
 }
 
 
@@ -64,11 +64,6 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
   };
 
   const categories = getCategories();
-
-  const getCategoryIcon = (categoryName: string): string => {
-    const category = getCategoryByName(categoryName);
-    return category ? category.icon : '📁';
-  };
 
   // Reset form when modal opens
   useEffect(() => {

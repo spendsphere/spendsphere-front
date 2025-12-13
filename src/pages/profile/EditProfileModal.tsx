@@ -81,9 +81,14 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       return;
     }
 
-    const updatedProfile: any = {
+    const updatedProfile: {
+      name: string;
+      email: string;
+      avatar: string;
+    } = {
       name: name.trim(),
       email: email.trim(),
+      avatar: currentAvatar,
     };
 
     // Если был выбран новый аватар, сохраняем его
@@ -91,8 +96,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       // В реальном приложении здесь будет загрузка файла на сервер
       // Пока просто сохраняем data URL
       updatedProfile.avatar = newAvatar;
-    } else {
-      updatedProfile.avatar = currentAvatar;
     }
 
     onSave(updatedProfile);

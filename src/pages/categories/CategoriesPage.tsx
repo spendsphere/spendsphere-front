@@ -12,7 +12,7 @@ import { useAuth } from '../../context/AuthContext';
 import { fetchTransactions } from '../../api/transactions';
 
 const CategoriesPage: React.FC = () => {
-  const { categories, getExpenseCategories } = useCategories();
+  const { categories } = useCategories();
   const { user } = useAuth();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
@@ -21,8 +21,6 @@ const CategoriesPage: React.FC = () => {
   );
 
   // Подсчет статистики
-  const [totalExpenseCategories, setTotalExpenseCategories] = useState<number>(0);
-
   const [totalSpent, setTotalSpent] = useState<number>(0);
   const [largestCategoryId, setLargestCategoryId] = useState<string | null>(null);
   const [largestCategoryAmount, setLargestCategoryAmount] = useState<number>(0);
@@ -55,9 +53,6 @@ const CategoriesPage: React.FC = () => {
           byCategory.set(key, (byCategory.get(key) || 0) + amt);
         }
         setTotalSpent(sum);
-        // count of expense categories used this month (excluding null category)
-        const usedCount = Array.from(byCategory.keys()).filter((k) => k != null && k !== -1).length;
-        setTotalExpenseCategories(usedCount);
         // find max
         let maxKey: number | null = null;
         let maxVal = 0;
@@ -79,9 +74,7 @@ const CategoriesPage: React.FC = () => {
         setTotalSpent(0);
         setLargestCategoryId(null);
         setLargestCategoryAmount(0);
-        setTotalExpenseCategories(0);
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id, categories.length]);
 
   return (

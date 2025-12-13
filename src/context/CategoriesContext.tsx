@@ -13,10 +13,10 @@ export interface Category {
 
 interface CategoriesContextType {
   categories: Category[];
-  addCategory: (category: Omit<Category, 'id'>) => void;
-  updateCategory: (id: string, category: Partial<Category>) => void;
-  deleteCategory: (id: string) => void;
-  getCategoryByName: (name: string) => Category | undefined;
+  addCategory: (_category: Omit<Category, 'id'>) => void;
+  updateCategory: (_id: string, _category: Partial<Category>) => void;
+  deleteCategory: (_id: string) => void;
+  getCategoryByName: (_name: string) => Category | undefined;
   getExpenseCategories: () => Category[];
   getIncomeCategories: () => Category[];
   getAllCategories: () => Category[];

@@ -11,11 +11,6 @@ const AnalyticsDisplay: React.FC<AnalyticsDisplayProps> = ({
   data,
   onNewRequest,
 }) => {
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return `${date.getDate()}.${date.getMonth() + 1}`;
-  };
-
   const formatAmount = (amount: number) => {
     return `${amount.toLocaleString('ru-RU')} Р`;
   };
@@ -60,7 +55,7 @@ const AnalyticsDisplay: React.FC<AnalyticsDisplayProps> = ({
             </div>
             <div className="pie-chart-placeholder">
               <div className="chart-note">График расходов по категориям</div>
-              {data.data.expensesByCategory.map((item, index) => (
+              {data.data.expensesByCategory.map((item) => (
                 <div key={item.category} className="category-item">
                   <span
                     className="category-color"

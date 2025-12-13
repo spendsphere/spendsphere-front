@@ -18,7 +18,7 @@ interface AuthContextValue {
   isAuthenticated: boolean;
   loginWithGoogle: () => void;
   logout: () => void;
-  setToken: (t: string | null) => void;
+  setToken: (_t: string | null) => void;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -50,7 +50,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } else {
       setUser(null);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   const loginWithGoogle = () => {

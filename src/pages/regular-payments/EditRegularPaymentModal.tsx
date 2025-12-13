@@ -6,7 +6,7 @@ interface EditRegularPaymentModalProps {
   isOpen: boolean;
   payment: RegularPayment;
   onClose: () => void;
-  onSave: (updated: RegularPayment) => void;
+  onSave: (_updated: RegularPayment) => void;
 }
 
 const EditRegularPaymentModal: React.FC<EditRegularPaymentModalProps> = ({
@@ -179,6 +179,7 @@ const EditRegularPaymentModal: React.FC<EditRegularPaymentModalProps> = ({
 };
 
 export default EditRegularPaymentModal;
+
 
 
 

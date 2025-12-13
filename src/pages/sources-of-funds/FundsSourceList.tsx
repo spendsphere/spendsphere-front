@@ -5,8 +5,8 @@ import './FundsSourceList.css';
 interface FundsSourceListProps {
   sources: FundsSource[];
   onAdd: () => void;
-  onEdit: (source: FundsSource) => void;
-  onDelete: (source: FundsSource) => void;
+  onEdit: (_source: FundsSource) => void;
+  onDelete: (_source: FundsSource) => void;
 }
 
 const FundsSourceList: React.FC<FundsSourceListProps> = ({

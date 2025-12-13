@@ -4,8 +4,8 @@ import './CategoriesList.css';
 
 interface CategoriesListProps {
   categories: Category[];
-  onEdit: (category: Category) => void;
-  onDelete: (category: Category) => void;
+  onEdit: (_category: Category) => void;
+  onDelete: (_category: Category) => void;
   onAdd: () => void;
 }
 

@@ -10,7 +10,7 @@ interface EditTransactionModalProps {
   isOpen: boolean;
   transaction: Transaction;
   onClose: () => void;
-  onSave: (transaction: Transaction) => void;
+  onSave: (_transaction: Transaction) => void;
 }
 
 const EditTransactionModal: React.FC<EditTransactionModalProps> = ({

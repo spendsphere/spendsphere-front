@@ -29,7 +29,7 @@ export interface AccountCreateDTO {
   includeInTotal?: boolean;
 }
 
-export interface AccountUpdateDTO extends Partial<AccountCreateDTO> {}
+export type AccountUpdateDTO = Partial<AccountCreateDTO>;
 
 export interface AccountBalanceDTO {
   totalAccounts: number;

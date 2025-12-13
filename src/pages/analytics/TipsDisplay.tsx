@@ -1,15 +1,14 @@
 import React from 'react';
-import { TipGroup } from './AnalyticsPage';
+import { TipGroup, Tip } from './AnalyticsPage';
 import './TipsDisplay.css';
 
 interface TipsDisplayProps {
   tipGroups: TipGroup[];
-  onDeleteGroup: (groupId: string) => void;
+  onDeleteGroup?: (_groupId: string) => void;
 }
 
 const TipsDisplay: React.FC<TipsDisplayProps> = ({
   tipGroups,
-  onDeleteGroup,
 }) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);

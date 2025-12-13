@@ -7,8 +7,8 @@ import './TransactionList.css';
 
 interface TransactionListProps {
   transactions: Transaction[];
-  onEdit: (transaction: Transaction) => void;
-  onDelete: (transaction: Transaction) => void;
+  onEdit: (_transaction: Transaction) => void;
+  onDelete: (_transaction: Transaction) => void;
 }
 
 const TransactionList: React.FC<TransactionListProps> = ({

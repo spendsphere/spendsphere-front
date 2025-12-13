@@ -22,7 +22,7 @@ export const categoriesApi = {
   allForUser: (userId: number) => apiClient.get<CategoryDTO[]>(`/v1/categories/user/${userId}/all`),
   customForUser: (userId: number) =>
     apiClient.get<CategoryDTO[]>(`/v1/categories/user/${userId}/custom`),
-  defaults: () => apiClient.get<CategoryDTO[]>(`/v1/categories/default`),
+  defaults: () => apiClient.get<CategoryDTO[]>('/v1/categories/default'),
   createForUser: (userId: number, body: CategoryInputDTO) =>
     apiClient.post<CategoryDTO>(`/v1/categories/user/${userId}/category`, body),
   updateForUser: (userId: number, categoryId: number, body: CategoryInputDTO) =>

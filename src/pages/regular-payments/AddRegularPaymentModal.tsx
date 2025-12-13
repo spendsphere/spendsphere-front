@@ -8,7 +8,7 @@ import { accountsApi, type AccountDTO } from '../../api/accounts';
 interface AddRegularPaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (payment: Omit<RegularPayment, 'id'> & { accountId: number }) => void;
+  onSave: (_payment: Omit<RegularPayment, 'id'> & { accountId: number }) => void;
 }
 
 const AddRegularPaymentModal: React.FC<AddRegularPaymentModalProps> = ({
@@ -24,7 +24,6 @@ const AddRegularPaymentModal: React.FC<AddRegularPaymentModalProps> = ({
   const [monthOfYear, setMonthOfYear] = useState<string>('1');
   const { getExpenseCategories, getCategoryByName } = useCategories();
   const [category, setCategory] = useState<string>('');
-  const [categoryColor, setCategoryColor] = useState<string>('#8b5cf6');
   const [icon, setIcon] = useState<string>('💳');
   const { user } = useAuth();
   const [accounts, setAccounts] = useState<Pick<AccountDTO, 'id' | 'name'>[]>([]);
@@ -43,7 +42,6 @@ const AddRegularPaymentModal: React.FC<AddRegularPaymentModalProps> = ({
       setDayOfWeek('1');
       setMonthOfYear('1');
       setCategory('');
-      setCategoryColor('#8b5cf6');
       setIcon('💳');
       setSelectedAccountId('');
       if (user) {
@@ -340,10 +338,6 @@ const AddRegularPaymentModal: React.FC<AddRegularPaymentModalProps> = ({
               value={category}
               onChange={(e) => {
                 setCategory(e.target.value);
-                const selectedCategory = getCategoryByName(e.target.value);
-                if (selectedCategory) {
-                  setCategoryColor(selectedCategory.color);
-                }
               }}
               required
             >

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useCategories, Category } from '../../context/CategoriesContext';
+import { useCategories } from '../../context/CategoriesContext';
 import { CATEGORY_ICONS, DEFAULT_CATEGORY_COLORS } from '../../constants/categoryIcons';
 import '../../shared/AddTransactionModal.css';
 import './CategoryModal.css';

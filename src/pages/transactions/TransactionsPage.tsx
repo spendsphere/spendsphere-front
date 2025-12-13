@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Sidebar from '../../shared/Sidebar';
 import Header from '../../shared/Header';
 import TransactionList from './TransactionList';
@@ -56,7 +56,6 @@ const TransactionsPage: React.FC = () => {
 
   useEffect(() => {
     load().catch(() => {});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
   const handleOpenAddModal = () => {

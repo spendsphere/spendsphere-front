@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './AnalyticsRequest.css';
 
 interface AnalyticsRequestProps {
-  onRequest: (period: number) => void;
+  onRequest: (_period: number) => void;
 }
 
 const AnalyticsRequest: React.FC<AnalyticsRequestProps> = ({ onRequest }) => {

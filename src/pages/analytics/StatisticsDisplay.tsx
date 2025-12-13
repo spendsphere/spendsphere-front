@@ -213,7 +213,7 @@ const StatisticsDisplay: React.FC<StatisticsDisplayProps> = ({
                 <Legend
                   verticalAlign="bottom"
                   height={36}
-                  formatter={(value, entry: any) => {
+                  formatter={(value, entry: { payload?: { value: number } }) => {
                     const percent = entry.payload
                       ? ((entry.payload.value /
                           expensesChartData.reduce(
@@ -263,7 +263,7 @@ const StatisticsDisplay: React.FC<StatisticsDisplayProps> = ({
                 <Legend
                   verticalAlign="bottom"
                   height={36}
-                  formatter={(value, entry: any) => {
+                  formatter={(value, entry: { payload?: { value: number } }) => {
                     const percent = entry.payload
                       ? ((entry.payload.value /
                           incomeChartData.reduce(

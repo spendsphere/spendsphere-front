@@ -67,7 +67,6 @@ const RegularPaymentsPage: React.FC = () => {
 
   useEffect(() => {
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
   const handleOpenModal = () => {

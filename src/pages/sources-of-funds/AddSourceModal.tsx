@@ -5,7 +5,7 @@ import './SourceModal.css';
 interface AddSourceModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (source: Omit<FundsSource, 'id'>) => void;
+  onSave: (_source: Omit<FundsSource, 'id'>) => void;
 }
 
 const AddSourceModal: React.FC<AddSourceModalProps> = ({

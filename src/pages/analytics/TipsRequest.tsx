@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './TipsRequest.css';
 
 interface TipsRequestProps {
-  onRequest: (goal: string, targetDate?: string) => void;
+  onRequest: (_goal: string, _targetDate?: string) => void;
   isRequesting: boolean;
 }
 

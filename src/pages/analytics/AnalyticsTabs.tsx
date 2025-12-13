@@ -3,7 +3,7 @@ import './AnalyticsTabs.css';
 
 interface AnalyticsTabsProps {
   activeTab: 'analytics' | 'tips';
-  onTabChange: (tab: 'analytics' | 'tips') => void;
+  onTabChange: (_tab: 'analytics' | 'tips') => void;
 }
 
 const AnalyticsTabs: React.FC<AnalyticsTabsProps> = ({

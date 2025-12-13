@@ -6,7 +6,7 @@ interface EditSourceModalProps {
   isOpen: boolean;
   source: FundsSource;
   onClose: () => void;
-  onSave: (source: FundsSource) => void;
+  onSave: (_source: FundsSource) => void;
 }
 
 const EditSourceModal: React.FC<EditSourceModalProps> = ({

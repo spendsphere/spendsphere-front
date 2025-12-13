@@ -31,7 +31,7 @@ export interface ReminderCreateDTO {
   accountId: number;
 }
 
-export interface ReminderUpdateDTO extends Partial<ReminderCreateDTO> {}
+export type ReminderUpdateDTO = Partial<ReminderCreateDTO>;
 
 export const remindersApi = {
   list: (userId: number) => apiClient.get<ReminderDTO[]>(`/v1/users/${userId}/reminders`),

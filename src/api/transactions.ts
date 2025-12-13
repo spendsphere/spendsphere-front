@@ -61,7 +61,7 @@ export interface TransactionCreateDTO {
   date: string; // ISO LocalDate (yyyy-MM-dd)
 }
 
-export interface TransactionUpdateDTO extends Partial<TransactionCreateDTO> {}
+export type TransactionUpdateDTO = Partial<TransactionCreateDTO>;
 
 export async function createTransaction(
   userId: number,

@@ -5,7 +5,6 @@ import Header from '../../shared/Header';
 import AnalyticsTabs from './AnalyticsTabs';
 import AnalyticsRequest from './AnalyticsRequest';
 import TipsRequest from './TipsRequest';
-import AnalyticsDisplay from './AnalyticsDisplay';
 import StatisticsDisplay from './StatisticsDisplay';
 import TipsDisplay from './TipsDisplay';
 import AdviceNotificationModal from '../../shared/AdviceNotificationModal';
@@ -60,7 +59,6 @@ const AnalyticsPage: React.FC = () => {
   const [statisticsData, setStatisticsData] =
     useState<TransactionStatisticsDTO | null>(null);
   const [statisticsPeriod, setStatisticsPeriod] = useState<number>(1);
-  const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
   const [tipGroups, setTipGroups] = useState<TipGroup[]>([]);
   const [showAdviceNotification, setShowAdviceNotification] = useState(false);
   const [isLoadingAdvices, setIsLoadingAdvices] = useState(false);

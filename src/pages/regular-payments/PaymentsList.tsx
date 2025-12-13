@@ -5,9 +5,9 @@ import './PaymentsList.css';
 interface PaymentsListProps {
   payments: RegularPayment[];
   onAdd: () => void;
-  onToggle: (id: string) => void;
-  onDelete: (id: string) => void;
-  onEdit?: (payment: RegularPayment) => void;
+  onToggle: (_id: string) => void;
+  onDelete: (_id: string) => void;
+  onEdit?: (_payment: RegularPayment) => void;
 }
 
 const PaymentsList: React.FC<PaymentsListProps> = ({
@@ -19,11 +19,6 @@ const PaymentsList: React.FC<PaymentsListProps> = ({
 }) => {
   const formatAmount = (amount: number) => {
     return `${amount.toLocaleString('ru-RU')} Р`;
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return `${date.getDate()} числа`;
   };
 
   const getPeriodLabel = (payment: RegularPayment): string => {

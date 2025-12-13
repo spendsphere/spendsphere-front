@@ -98,4 +98,40 @@ export async function uploadTransactionPhoto(
   }
 }
 
+export interface TransactionStatisticsDTO {
+  expensesByCategory: Record<string, number>;
+  incomeByCategory: Record<string, number>;
+  monthlyExpenses: Record<string, number>;
+  monthlyIncome: Record<string, number>;
+  avgExpensesByCategory: Array<{
+    categoryName: string;
+    timeSeries: Record<string, number>;
+  }>;
+  avgIncomeByCategory: Array<{
+    categoryName: string;
+    timeSeries: Record<string, number>;
+  }>;
+  maxExpensePerDay: {
+    date: string;
+    amount: number;
+  } | null;
+  maxExpensePerCategory: {
+    categoryName: string;
+    amount: number;
+  } | null;
+  averageExpense: number;
+  averageIncome: number;
+  startDate: string;
+  endDate: string;
+}
+
+export async function fetchTransactionStatistics(
+  userId: number,
+  months: 1 | 3 | 6 | 12,
+): Promise<TransactionStatisticsDTO> {
+  return apiClient.get<TransactionStatisticsDTO>(
+    `/v1/users/${userId}/transactions/statistics?months=${months}`,
+  );
+}
+
 

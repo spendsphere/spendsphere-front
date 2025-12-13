@@ -14,7 +14,7 @@ const SourcesOfFunds: React.FC = () => {
       .list(user.id)
       .then((list) => {
         const sorted = [...list].sort((a, b) => (a.name || '').localeCompare(b.name || ''));
-        setSources(sorted.slice(0, 3));
+        setSources(sorted.slice(0, 4));
       })
       .catch(() => setSources([]));
   }, [user?.id]);

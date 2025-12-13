@@ -6,6 +6,8 @@ export interface BackendTransactionDTO {
   type: 'INCOME' | 'EXPENSE' | 'TRANSFER';
   categoryId: number | null;
   categoryName: string | null;
+  categoryIcon: string | null;
+  categoryColor: string | null;
   accountId: number | null;
   accountName: string | null;
   transferAccountId: number | null;

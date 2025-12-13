@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useCategories, Category } from '../../context/CategoriesContext';
+import { CATEGORY_ICONS, DEFAULT_CATEGORY_COLORS } from '../../constants/categoryIcons';
 import '../../shared/AddTransactionModal.css';
 import './CategoryModal.css';
 
@@ -17,50 +18,15 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
   const [icon, setIcon] = useState<string>('📁');
   const [color, setColor] = useState<string>('#6b7280');
   const [type, setType] = useState<'expense' | 'income' | 'both'>('expense');
-
-  const icons = [
-    '📁',
-    '🛒',
-    '🚗',
-    '🎬',
-    '🏥',
-    '📚',
-    '💼',
-    '🍎',
-    '🍴',
-    '☕',
-    '🎮',
-    '✈️',
-    '🏠',
-    '👕',
-    '💄',
-    '📱',
-    '💻',
-    '🎵',
-    '📺',
-    '☁️',
-  ];
-
-  const colors = [
-    '#ef4444',
-    '#f59e0b',
-    '#eab308',
-    '#10b981',
-    '#06b6d4',
-    '#3b82f6',
-    '#6366f1',
-    '#8b5cf6',
-    '#a855f7',
-    '#ec4899',
-    '#6b7280',
-  ];
+  const [selectedCategory, setSelectedCategory] = useState<number>(0);
 
   useEffect(() => {
     if (isOpen) {
       setName('');
       setIcon('📁');
-      setColor('#6b7280');
+      setColor('#10b981');
       setType('expense');
+      setSelectedCategory(0);
     }
   }, [isOpen]);
 
@@ -132,8 +98,20 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
             <label htmlFor="icon" className="form-label">
               Иконка *
             </label>
+            <div className="icon-category-tabs">
+              {CATEGORY_ICONS.map((cat, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  className={`category-tab ${selectedCategory === idx ? 'active' : ''}`}
+                  onClick={() => setSelectedCategory(idx)}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
             <div className="icon-selector">
-              {icons.map((ic) => (
+              {CATEGORY_ICONS[selectedCategory].icons.map((ic) => (
                 <button
                   key={ic}
                   type="button"
@@ -151,7 +129,7 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({
               Цвет *
             </label>
             <div className="color-selector">
-              {colors.map((col) => (
+              {DEFAULT_CATEGORY_COLORS.map((col) => (
                 <button
                   key={col}
                   type="button"

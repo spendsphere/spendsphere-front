@@ -44,7 +44,7 @@ const TransactionsPage: React.FC = () => {
       id: String(dto.id),
       date: dto.date,
       category: dto.categoryName || 'Без категории',
-      categoryIcon: '📁',
+      categoryIcon: dto.categoryIcon || '📁',
       note: dto.description || '',
       source: dto.accountName || '—',
       amount: dto.amount,

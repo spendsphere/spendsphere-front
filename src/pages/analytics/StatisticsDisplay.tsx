@@ -62,48 +62,77 @@ const StatisticsDisplay: React.FC<StatisticsDisplayProps> = ({
   );
 
   // Подготовка данных для столбчатой диаграммы по месяцам
-  const monthlyData = Object.keys(data.monthlyExpenses)
-    .sort()
-    .map((month) => ({
-      month,
-      expenses: data.monthlyExpenses[month] || 0,
-      income: data.monthlyIncome[month] || 0,
-    }));
+  const monthlyData = (() => {
+    const startDate = new Date(data.startDate);
+    const endDate = new Date(data.endDate);
+    const months: Array<{ month: string; expenses: number; income: number }> = [];
+
+    const current = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+    const end = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
+
+    while (current <= end) {
+      const monthKey = `${current.getFullYear()}-${String(current.getMonth() + 1).padStart(2, '0')}`;
+      months.push({
+        month: monthKey,
+        expenses: data.monthlyExpenses[monthKey] || 0,
+        income: data.monthlyIncome[monthKey] || 0,
+      });
+      current.setMonth(current.getMonth() + 1);
+    }
+
+    return months;
+  })();
 
   // Подготовка данных для линейной диаграммы средних расходов по категориям
   const avgExpensesLineData = (() => {
-    const allMonths = new Set<string>();
-    data.avgExpensesByCategory.forEach((cat) => {
-      Object.keys(cat.timeSeries).forEach((month) => allMonths.add(month));
-    });
+    if (data.avgExpensesByCategory.length === 0) return [];
 
-    return Array.from(allMonths)
-      .sort()
-      .map((month) => {
-        const dataPoint: Record<string, string | number> = { month };
-        data.avgExpensesByCategory.forEach((cat) => {
-          dataPoint[cat.categoryName] = cat.timeSeries[month] || 0;
-        });
-        return dataPoint;
+    const startDate = new Date(data.startDate);
+    const endDate = new Date(data.endDate);
+    const result: Array<Record<string, string | number>> = [];
+
+    const current = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+    const end = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
+
+    while (current <= end) {
+      const monthKey = `${current.getFullYear()}-${String(current.getMonth() + 1).padStart(2, '0')}`;
+      const dataPoint: Record<string, string | number> = { month: monthKey };
+      
+      data.avgExpensesByCategory.forEach((cat) => {
+        dataPoint[cat.categoryName] = cat.timeSeries[monthKey] || 0;
       });
+      
+      result.push(dataPoint);
+      current.setMonth(current.getMonth() + 1);
+    }
+
+    return result;
   })();
 
   // Подготовка данных для линейной диаграммы средних доходов по категориям
   const avgIncomeLineData = (() => {
-    const allMonths = new Set<string>();
-    data.avgIncomeByCategory.forEach((cat) => {
-      Object.keys(cat.timeSeries).forEach((month) => allMonths.add(month));
-    });
+    if (data.avgIncomeByCategory.length === 0) return [];
 
-    return Array.from(allMonths)
-      .sort()
-      .map((month) => {
-        const dataPoint: Record<string, string | number> = { month };
-        data.avgIncomeByCategory.forEach((cat) => {
-          dataPoint[cat.categoryName] = cat.timeSeries[month] || 0;
-        });
-        return dataPoint;
+    const startDate = new Date(data.startDate);
+    const endDate = new Date(data.endDate);
+    const result: Array<Record<string, string | number>> = [];
+
+    const current = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+    const end = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
+
+    while (current <= end) {
+      const monthKey = `${current.getFullYear()}-${String(current.getMonth() + 1).padStart(2, '0')}`;
+      const dataPoint: Record<string, string | number> = { month: monthKey };
+      
+      data.avgIncomeByCategory.forEach((cat) => {
+        dataPoint[cat.categoryName] = cat.timeSeries[monthKey] || 0;
       });
+      
+      result.push(dataPoint);
+      current.setMonth(current.getMonth() + 1);
+    }
+
+    return result;
   })();
 
   return (

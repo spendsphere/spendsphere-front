@@ -5,14 +5,16 @@ export type BackendCategoryType = 'INCOME' | 'EXPENSE' | 'BOTH';
 export interface CategoryDTO {
   id: number;
   name: string;
-  iconUrl: string | null;
+  icon: string | null;
+  color: string | null;
   isDefault: boolean;
   categoryType: BackendCategoryType;
 }
 
 export interface CategoryInputDTO {
   name: string;
-  iconUrl?: string | null;
+  icon?: string | null;
+  color?: string | null;
   categoryType?: BackendCategoryType;
 }
 

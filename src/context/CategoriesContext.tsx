@@ -51,8 +51,8 @@ export const CategoriesProvider: React.FC<CategoriesProviderProps> = ({
   const mapDto = (dto: CategoryDTO): Category => ({
     id: String(dto.id),
     name: dto.name,
-    icon: '📁',
-    color: '#6b7280',
+    icon: dto.icon || '📁',
+    color: dto.color || '#6b7280',
     type: mapBackendType(dto.categoryType),
     isDefault: !!dto.isDefault,
   });
@@ -89,7 +89,8 @@ export const CategoriesProvider: React.FC<CategoriesProviderProps> = ({
     if (!user) return;
     const input: CategoryInputDTO = {
       name: category.name,
-      iconUrl: null,
+      icon: category.icon || null,
+      color: category.color || null,
       categoryType: toBackendType(category.type),
     };
     try {
@@ -102,9 +103,11 @@ export const CategoriesProvider: React.FC<CategoriesProviderProps> = ({
 
   const updateCategory = async (id: string, updates: Partial<Category>) => {
     if (!user) return;
+    const existing = categories.find((c) => c.id === id);
     const input: CategoryInputDTO = {
-      name: updates.name || categories.find((c) => c.id === id)?.name || '',
-      iconUrl: null,
+      name: updates.name || existing?.name || '',
+      icon: updates.icon !== undefined ? updates.icon : (existing?.icon || null),
+      color: updates.color !== undefined ? updates.color : (existing?.color || null),
       categoryType: updates.type ? toBackendType(updates.type) : undefined,
     };
     try {

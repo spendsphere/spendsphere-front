@@ -1,3 +1,69 @@
+.icon-category-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.category-tab {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  background: var(--card-bg, white);
+  color: var(--text-secondary, #6b7280);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.category-tab:hover {
+  border-color: var(--primary-color, #10b981);
+}
+
+.category-tab.active {
+  background: var(--primary-color, #10b981);
+  color: white;
+  border-color: var(--primary-color, #10b981);
+}
+
+.icon-selector {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 8px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 8px;
+}
+
+.icon-option {
+  width: 36px;
+  height: 36px;
+  font-size: 20px;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  background: var(--card-bg, white);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-option:hover {
+  transform: scale(1.1);
+  border-color: var(--border-color, #e5e7eb);
+}
+
+.icon-option.selected {
+  border-color: var(--primary-color, #10b981);
+  background: rgba(16, 185, 129, 0.1);
+}
+
 .color-selector {
   display: flex;
   gap: 8px;

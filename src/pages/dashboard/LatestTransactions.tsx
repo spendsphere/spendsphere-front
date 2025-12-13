@@ -43,7 +43,15 @@ const LatestTransactions: React.FC = () => {
       <div className="transactions-list">
         {items.map((t) => (
           <div key={t.id} className="transaction-item">
-            <div className="transaction-icon">{'📁'}</div>
+            <div 
+              className="transaction-icon"
+              style={{ 
+                backgroundColor: t.categoryColor ? `${t.categoryColor}20` : '#f3f4f6',
+                color: t.categoryColor || '#6b7280'
+              }}
+            >
+              {t.categoryIcon || '📁'}
+            </div>
             <div className="transaction-info">
               <div className="transaction-category">{t.categoryName || 'Без категории'}</div>
               <div className="transaction-meta">

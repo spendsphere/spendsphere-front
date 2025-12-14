@@ -53,59 +53,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [token]);
 
   const loginWithGoogle = () => {
-    const popup = window.open('/oauth2/authorization/google', 'oauth2-login', 'width=500,height=700');
-    if (!popup) return;
-    
-    const pollIntervalMs = 500;
-    const maxAttempts = 240; // ~2 минуты
-    let attempts = 0;
-    
-    const timer = setInterval(() => {
-      attempts += 1;
-      
-      if (popup.closed) {
-        clearInterval(timer);
-        // После закрытия popup проверяем cookie
-        checkAuthFromCookie();
-        return;
-      }
-      
-      try {
-        // Проверяем, вернулись ли на callback URL
-        const popupUrl = popup.location.href;
-        if (popupUrl.includes('/oauth2/callback')) {
-          clearInterval(timer);
-          // Даём время установиться cookie
-          setTimeout(() => {
-            popup.close();
-            checkAuthFromCookie();
-          }, 500);
-        }
-      } catch {
-        // Cross-origin ошибка - это нормально, пока идет OAuth
-      }
-      
-      if (attempts >= maxAttempts) {
-        clearInterval(timer);
-        try { popup.close(); } catch { /* noop */ }
-      }
-    }, pollIntervalMs);
-  };
-
-  const checkAuthFromCookie = () => {
-    const cookieToken = getCookie('accessToken');
-    if (cookieToken) {
-      setToken(cookieToken);
-    }
-  };
-
-  const getCookie = (name: string): string | null => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) {
-      return parts.pop()?.split(';').shift() || null;
-    }
-    return null;
+    // Полноэкранный редирект на OAuth endpoint
+    window.location.href = '/oauth2/authorization/google';
   };
 
   const logout = () => {

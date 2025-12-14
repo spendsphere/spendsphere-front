@@ -18,7 +18,6 @@ const OAuthCallback: React.FC = () => {
   const { setToken } = useAuth();
 
   useEffect(() => {
-    // Проверяем наличие ошибки в URL
     const params = new URLSearchParams(location.search);
     const error = params.get('error');
 
@@ -26,14 +25,26 @@ const OAuthCallback: React.FC = () => {
       return;
     }
 
-    // Читаем токен из cookie
-    const cookieToken = getCookie('accessToken');
-    
-    if (cookieToken) {
-      setToken(cookieToken);
-      navigate('/', { replace: true });
-    } else {
-      console.error('Token not found in cookie after OAuth callback');
+    // Функция для проверки cookie
+    const checkToken = () => {
+      const cookieToken = getCookie('accessToken');
+      
+      if (cookieToken) {
+        setToken(cookieToken);
+        navigate('/', { replace: true });
+        return true;
+      }
+      return false;
+    };
+
+    // Проверяем сразу
+    if (!checkToken()) {
+      // Если не нашли сразу, пробуем через небольшую задержку
+      setTimeout(() => {
+        if (!checkToken()) {
+          console.error('Token not found in cookie after OAuth callback');
+        }
+      }, 100);
     }
   }, [location.search, setToken, navigate]);
 

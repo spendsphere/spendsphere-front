@@ -70,3 +70,47 @@
   --gradient-end: #06b6d4;
 }
 
+/* Mobile styles */
+@media (max-width: 768px) {
+  .summary-cards {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .summary-card {
+    padding: 20px;
+  }
+
+  .summary-card-label {
+    font-size: 13px;
+  }
+
+  .summary-card-value {
+    font-size: 20px;
+  }
+
+  .summary-card-icon {
+    font-size: 40px;
+    margin-left: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .summary-card {
+    padding: 16px;
+  }
+
+  .summary-card-label {
+    font-size: 12px;
+  }
+
+  .summary-card-value {
+    font-size: 18px;
+  }
+
+  .summary-card-icon {
+    font-size: 36px;
+  }
+}
+

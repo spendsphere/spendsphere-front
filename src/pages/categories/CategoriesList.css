@@ -119,3 +119,45 @@
   background-color: #fef2f2;
 }
 
+/* Mobile styles */
+@media (max-width: 768px) {
+  .categories-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .category-card {
+    padding: 14px;
+  }
+
+  .category-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .category-name {
+    font-size: 15px;
+  }
+
+  .btn-action {
+    font-size: 14px;
+    width: 28px;
+    height: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .category-card {
+    padding: 12px;
+  }
+
+  .category-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .category-name {
+    font-size: 14px;
+  }
+}
+

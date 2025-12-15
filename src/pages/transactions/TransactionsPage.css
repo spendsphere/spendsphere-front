@@ -24,5 +24,10 @@
   .transactions-page-main {
     margin-left: 0;
   }
+
+  .transactions-page-content {
+    padding: 16px;
+    gap: 16px;
+  }
 }
 

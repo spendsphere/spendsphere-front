@@ -29,6 +29,11 @@
     margin-left: 0;
   }
 
+  .regular-payments-page-content {
+    padding: 16px;
+    gap: 16px;
+  }
+
   .summary-section {
     flex-direction: column;
   }

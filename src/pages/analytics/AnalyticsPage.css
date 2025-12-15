@@ -51,5 +51,10 @@
   .analytics-page-main {
     margin-left: 0;
   }
+
+  .analytics-page-content {
+    padding: 16px;
+    gap: 16px;
+  }
 }
 

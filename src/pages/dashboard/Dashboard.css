@@ -24,5 +24,10 @@
   .dashboard-main {
     margin-left: 0;
   }
+
+  .dashboard-content {
+    padding: 16px;
+    gap: 16px;
+  }
 }
 

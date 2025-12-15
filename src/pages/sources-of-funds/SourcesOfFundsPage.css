@@ -24,5 +24,10 @@
   .sources-of-funds-page-main {
     margin-left: 0;
   }
+
+  .sources-of-funds-page-content {
+    padding: 16px;
+    gap: 16px;
+  }
 }
 

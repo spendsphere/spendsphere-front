@@ -56,3 +56,57 @@
   transition: color 0.3s ease;
 }
 
+/* Mobile styles */
+@media (max-width: 768px) {
+  .quick-actions {
+    margin-top: 16px;
+    margin-bottom: 24px !important;
+  }
+
+  .section-title {
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+
+  .actions-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .action-card {
+    padding: 20px;
+  }
+
+  .action-icon {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+
+  .action-title {
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+
+  .action-description {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .action-card {
+    padding: 16px;
+  }
+
+  .action-icon {
+    font-size: 24px;
+  }
+
+  .action-title {
+    font-size: 15px;
+  }
+
+  .action-description {
+    font-size: 12px;
+  }
+}
+

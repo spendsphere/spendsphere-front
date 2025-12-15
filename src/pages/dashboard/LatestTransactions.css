@@ -90,3 +90,59 @@
   color: #ef4444;
 }
 
+/* Mobile styles */
+@media (max-width: 768px) {
+  .section-header {
+    margin-bottom: 12px;
+  }
+
+  .transaction-item {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .transaction-icon {
+    font-size: 24px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .transaction-category {
+    font-size: 15px;
+  }
+
+  .transaction-meta {
+    font-size: 13px;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .transaction-amount {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .transaction-item {
+    padding: 10px;
+  }
+
+  .transaction-icon {
+    font-size: 20px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .transaction-category {
+    font-size: 14px;
+  }
+
+  .transaction-meta {
+    font-size: 12px;
+  }
+
+  .transaction-amount {
+    font-size: 15px;
+  }
+}
+

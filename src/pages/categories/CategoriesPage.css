@@ -24,5 +24,10 @@
   .categories-page-main {
     margin-left: 0;
   }
+
+  .categories-page-content {
+    padding: 16px;
+    gap: 16px;
+  }
 }
 

@@ -24,5 +24,10 @@
   .profile-page-main {
     margin-left: 0;
   }
+
+  .profile-page-content {
+    padding: 16px;
+    gap: 16px;
+  }
 }
 

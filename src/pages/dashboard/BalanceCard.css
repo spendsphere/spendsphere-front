@@ -42,3 +42,38 @@
   color: white !important;
 }
 
+/* Mobile styles */
+@media (max-width: 768px) {
+  .balance-card {
+    padding: 24px;
+  }
+
+  .balance-header {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .balance-details {
+    gap: 20px;
+  }
+
+  .balance-label {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .balance-card {
+    padding: 20px;
+  }
+
+  .balance-header {
+    font-size: 14px;
+  }
+
+  .balance-details {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+

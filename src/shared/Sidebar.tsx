@@ -40,7 +40,7 @@ const Sidebar: React.FC = () => {
           <Link to="/" className="logo-link" onClick={handleNavClick}>
             <div className="logo">
               <div className="logo-icon">S</div>
-              {!isCollapsed && <span className="logo-text">SpendSphere</span>}
+              <span className={`logo-text ${isCollapsed ? 'collapsed' : ''}`}>SpendSphere</span>
             </div>
           </Link>
           <button 
@@ -57,7 +57,7 @@ const Sidebar: React.FC = () => {
             const content = (
               <>
                 <span className="nav-icon">{item.icon}</span>
-                {!isCollapsed && <span className="nav-label">{item.label}</span>}
+                <span className={`nav-label ${isCollapsed ? 'collapsed' : ''}`}>{item.label}</span>
               </>
             );
 
@@ -78,17 +78,15 @@ const Sidebar: React.FC = () => {
             );
           })}
         </nav>
-        {!isCollapsed && (
-          <div className="sidebar-premium">
-            <div className="premium-content">
-              <span className="premium-icon">👑</span>
-              <div className="premium-text">
-                <div className="premium-title">Premium</div>
-                <div className="premium-subtitle">Больше возможностей</div>
-              </div>
+        <div className={`sidebar-premium ${isCollapsed ? 'collapsed' : ''}`}>
+          <div className="premium-content">
+            <span className="premium-icon">👑</span>
+            <div className="premium-text">
+              <div className="premium-title">Premium</div>
+              <div className="premium-subtitle">Больше возможностей</div>
             </div>
           </div>
-        )}
+        </div>
       </aside>
     </>
   );

@@ -11,6 +11,7 @@ import './Dashboard.css';
 
 const Dashboard: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -20,20 +21,28 @@ const Dashboard: React.FC = () => {
     setIsModalOpen(false);
   };
 
+  const handleTransactionAdded = () => {
+    setRefreshKey((prev) => prev + 1);
+  };
+
   return (
     <div className="dashboard">
       <Sidebar />
       <div className="dashboard-main">
         <Header onOpenModal={handleOpenModal} title="Главная" />
         <div className="dashboard-content">
-          <BalanceCard />
+          <BalanceCard key={`balance-${refreshKey}`} />
           <QuickActions onOpenModal={handleOpenModal} />
-          <LatestTransactions />
-          <SourcesOfFunds />
-          <RecentAdvices />
+          <LatestTransactions key={`transactions-${refreshKey}`} />
+          <SourcesOfFunds key={`sources-${refreshKey}`} />
+          <RecentAdvices key={`advices-${refreshKey}`} />
         </div>
       </div>
-      <AddTransactionModal isOpen={isModalOpen} onClose={handleCloseModal} />
+      <AddTransactionModal 
+        isOpen={isModalOpen} 
+        onClose={handleCloseModal}
+        onSave={handleTransactionAdded}
+      />
     </div>
   );
 };

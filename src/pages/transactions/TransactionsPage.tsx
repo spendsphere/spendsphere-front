@@ -93,7 +93,7 @@ const TransactionsPage: React.FC = () => {
           id: String(saved.id),
           date: saved.date,
           category: saved.categoryName || 'Без категории',
-          categoryIcon: '📁',
+          categoryIcon: saved.categoryIcon || '📁',
           note: saved.description || '',
           source: saved.accountName || updatedTransaction.source,
           amount: saved.amount,

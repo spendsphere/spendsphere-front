@@ -176,7 +176,7 @@ const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
             source: created.accountName || accounts.find((a) => String(a.id) === selectedAccountId)?.name || '—',
             type: transactionType as 'доход' | 'расход',
             category: created.categoryName || category,
-            categoryIcon: '📁',
+            categoryIcon: created.categoryIcon || '📁',
             amount: created.amount,
             date: created.date,
             note: created.description || '',

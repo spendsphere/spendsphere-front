@@ -54,7 +54,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const loginWithGoogle = () => {
     // Полноэкранный редирект на OAuth endpoint
-    window.location.href = '/oauth2/authorization/google';
+    window.location.href = '/api/oauth2/authorization/google';
   };
 
   const logout = () => {

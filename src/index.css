@@ -17,6 +17,7 @@
   --card-bg: #ffffff;
   --sidebar-bg: #ffffff;
   --hover-bg: #f3f4f6;
+  --sidebar-width: 280px;
 }
 
 :root[data-theme='dark'] {
@@ -32,6 +33,11 @@
   --card-bg: #1e293b;
   --sidebar-bg: #1e293b;
   --hover-bg: #334155;
+  --sidebar-width: 280px;
+}
+
+body.sidebar-collapsed {
+  --sidebar-width: 80px;
 }
 
 body {

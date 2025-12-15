@@ -9,7 +9,8 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin-left: 280px;
+  margin-left: var(--sidebar-width);
+  transition: margin-left 0.3s ease;
 }
 
 .categories-page-content {

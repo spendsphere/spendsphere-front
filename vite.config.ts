@@ -7,25 +7,26 @@ export default defineConfig({
     host: true,
     port: 3000,
     open: true,
+    allowedHosts: ['spendsphere.ru', 'www.spendsphere.ru'],
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',
+        target: 'https://spendsphere.ru/api',
         changeOrigin: true,
         secure: false,
       },
       // Важно: НЕ проксируем /oauth2/callback — это фронтовый роут
       '/oauth2/authorization': {
-        target: 'http://localhost:8080',
+        target: 'https://spendsphere.ru/api',
         changeOrigin: true,
         secure: false,
       },
       '/login': {
-        target: 'http://localhost:8080',
+        target: 'https://spendsphere.ru/api',
         changeOrigin: true,
         secure: false,
       },
       '/logout': {
-        target: 'http://localhost:8080',
+        target: 'https://spendsphere.ru/api',
         changeOrigin: true,
         secure: false,
       },
